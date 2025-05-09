@@ -79,20 +79,18 @@ jobs:
               echo "Сервис frontend уже существует в docker-compose.yml."
             else
               echo "Добавляем сервис frontend в docker-compose.yml..."
-              # Добавление сервиса frontend в docker-compose.yml
-              cat >> docker-compose.yml <<EOF
-
-  frontend:
-    image: \${DOCKER_USERNAME}/job_solution_frontend:latest
-    container_name: job_solution_frontend
-    restart: unless-stopped
-    depends_on:
-      - app
-    environment:
-      - REACT_APP_API_URL=http://app:8080
-    networks:
-      - app_network
-EOF
+              # Используем более простой подход с echo вместо heredoc
+              echo "" >> docker-compose.yml
+              echo "  frontend:" >> docker-compose.yml
+              echo "    image: \${DOCKER_USERNAME}/job_solution_frontend:latest" >> docker-compose.yml
+              echo "    container_name: job_solution_frontend" >> docker-compose.yml
+              echo "    restart: unless-stopped" >> docker-compose.yml
+              echo "    depends_on:" >> docker-compose.yml
+              echo "      - app" >> docker-compose.yml
+              echo "    environment:" >> docker-compose.yml
+              echo "      - REACT_APP_API_URL=http://app:8080" >> docker-compose.yml
+              echo "    networks:" >> docker-compose.yml
+              echo "      - app_network" >> docker-compose.yml
             fi
             
             # Принудительная остановка всех старых контейнеров
