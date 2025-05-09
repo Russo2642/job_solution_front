@@ -192,7 +192,7 @@ const FilterButton = styled(Button)(({ theme }) => ({
   },
 }))
 
-const FilterDrawer = styled(SwipeableDrawer)(({ theme }) => ({
+const FilterDrawer = styled(SwipeableDrawer)(() => ({
   '& .MuiDrawer-paper': {
     width: '85%',
     maxWidth: '350px',
@@ -208,11 +208,11 @@ const HomePage = () => {
 
   const [allCompanies, setAllCompanies] = useState<CompanyWithDetails[]>([])
   const [companies, setCompanies] = useState<CompanyWithDetails[]>([])
-  const [companySizes, setCompanySizes] = useState<CompanySizes>({
-    small: 'до 50 сотрудников',
-    medium: '50-200 сотрудников',
-    large: '200-1000 сотрудников',
-    enterprise: 'более 1000 сотрудников'
+  const [companySizes] = useState<any>({
+    'small': '1-50 сотрудников',
+    'medium': '51-200 сотрудников',
+    'large': '201-1000 сотрудников',
+    'enterprise': '1000+ сотрудников'
   })
   const [cities, setCities] = useState<City[]>([])
   const [industries, setIndustries] = useState<Industry[]>([])

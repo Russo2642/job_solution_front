@@ -141,7 +141,7 @@ export class ApiClient {
             ...(options.headers as Record<string, string> || {})
         };
 
-        let accessToken = TokenService.getAccessToken();
+        const accessToken = TokenService.getAccessToken();
         if (accessToken) {
             headers['Authorization'] = `Bearer ${accessToken}`;
         }
@@ -203,7 +203,7 @@ export class ApiClient {
 
     static async refreshTokenAndRetry(refreshToken: string): Promise<string> {
         if (isRefreshing) {
-            return new Promise((resolve, reject) => {
+            return new Promise<string>((resolve) => {
                 refreshQueue.push((token: string) => {
                     resolve(token);
                 });

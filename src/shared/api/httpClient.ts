@@ -37,7 +37,7 @@ export class HttpClient {
             ...(options.headers as Record<string, string> || {})
         };
 
-        let accessToken = TokenService.getAccessToken();
+        const accessToken = TokenService.getAccessToken();
         if (accessToken) {
             headers['Authorization'] = `Bearer ${accessToken}`;
         }

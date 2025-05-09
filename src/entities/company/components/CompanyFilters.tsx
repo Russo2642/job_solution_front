@@ -28,7 +28,7 @@ interface CompanyFiltersProps {
   initialFilters?: CompaniesFilter;
 }
 
-const FilterContainer = styled(Box)(({ theme }) => ({
+const FilterContainer = styled(Box)(() => ({
   height: '100%',
   backgroundColor: 'white',
   borderRadius: '12px',
@@ -36,7 +36,7 @@ const FilterContainer = styled(Box)(({ theme }) => ({
   boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
 }));
 
-const FilterHeading = styled(Box)(({ theme }) => ({
+const FilterHeading = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -45,17 +45,17 @@ const FilterHeading = styled(Box)(({ theme }) => ({
   paddingBottom: '16px',
 }));
 
-const FilterTitle = styled(Typography)(({ theme }) => ({
+const FilterTitle = styled(Typography)(() => ({
   fontSize: '20px',
   fontWeight: 600,
   color: '#1a1a1a',
 }));
 
-const FilterSection = styled(Box)(({ theme }) => ({
+const FilterSection = styled(Box)(() => ({
   marginBottom: '24px',
 }));
 
-const FilterLabel = styled(Typography)(({ theme }) => ({
+const FilterLabel = styled(Typography)(() => ({
   fontSize: '16px',
   fontWeight: 500,
   marginBottom: '12px',
@@ -74,7 +74,7 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   borderRadius: '8px',
 }));
 
-const ResetButton = styled(Button)(({ theme }) => ({
+const ResetButton = styled(Button)(() => ({
   textTransform: 'none',
   fontSize: '14px',
   color: '#666',
@@ -90,7 +90,7 @@ const StyledRadio = styled(Radio)(({ theme }) => ({
   color: theme.palette.primary.main,
 }));
 
-const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+const StyledFormControlLabel = styled(FormControlLabel)(() => ({
   marginRight: 0,
   marginBottom: '8px',
   width: '100%',
@@ -100,7 +100,7 @@ const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   }
 }));
 
-const StyledChip = styled(Chip)(({ theme }) => ({
+const StyledChip = styled(Chip)(() => ({
   margin: 2,
   backgroundColor: '#f0f2f5',
   color: '#333',
@@ -109,14 +109,14 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   },
 }));
 
-const SortingContainer = styled(Box)(({ theme }) => ({
+const SortingContainer = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
   marginBottom: '12px',
 }));
 
-const SortButton = styled(Button)(({ theme }) => ({
+const SortButton = styled(Button)(() => ({
   textTransform: 'none',
   fontSize: '13px',
   padding: '6px 10px',

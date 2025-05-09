@@ -142,11 +142,11 @@ const FormSection = styled(Box)(({ theme }) => ({
 }))
 
 const FormTitle = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(3),
+  marginBottom: 12,
   fontWeight: 600,
   fontSize: '1.4rem',
   [theme.breakpoints.down('sm')]: {
-    marginBottom: theme.spacing(2),
+    marginBottom: 8,
     fontSize: '1.25rem',
   },
 }))
@@ -154,10 +154,10 @@ const FormTitle = styled(Typography)(({ theme }) => ({
 const CompanyOption = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  padding: theme.spacing(1, 2),
+  padding: 8,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${theme.palette.divider}`,
-  marginBottom: theme.spacing(1),
+  marginBottom: 8,
   cursor: 'pointer',
   transition: 'all 0.2s',
   '&:hover': {
@@ -168,7 +168,7 @@ const CompanyOption = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.primary.light + '10',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(0.75, 1.5),
+    padding: 6,
   },
 }))
 
@@ -176,11 +176,11 @@ const CompanyLogo = styled('img')(({ theme }) => ({
   width: 40,
   height: 40,
   borderRadius: theme.shape.borderRadius,
-  marginRight: theme.spacing(2),
+  marginRight: 16,
   [theme.breakpoints.down('sm')]: {
     width: 32,
     height: 32,
-    marginRight: theme.spacing(1.5),
+    marginRight: 12,
   },
 }))
 
@@ -189,15 +189,15 @@ const RatingLabel = styled(FormLabel)(({ theme }) => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   width: '100%',
-  marginBottom: theme.spacing(1),
+  marginBottom: 8,
   fontSize: '0.95rem',
   [theme.breakpoints.down('sm')]: {
     fontSize: '0.9rem',
-    marginBottom: theme.spacing(0.5),
+    marginBottom: 4,
     flexDirection: 'column',
     alignItems: 'flex-start',
     '& .MuiRating-root': {
-      marginTop: theme.spacing(1),
+      marginTop: 8,
     },
   },
 }))
@@ -205,16 +205,16 @@ const RatingLabel = styled(FormLabel)(({ theme }) => ({
 const StyledGrid = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexWrap: 'wrap',
-  gap: theme.spacing(2),
+  gap: 8,
   [theme.breakpoints.down('sm')]: {
-    gap: theme.spacing(1),
+    gap: 4,
   },
 }))
 
-const SuccessDialog = styled(Dialog)(({ theme }) => ({
+const SuccessDialog = styled(Dialog)(() => ({
   '& .MuiDialog-paper': {
     maxWidth: 400,
-    padding: theme.spacing(2),
+    padding: 16,
     borderRadius: 16,
   }
 }));
@@ -222,21 +222,21 @@ const SuccessDialog = styled(Dialog)(({ theme }) => ({
 const SuccessIcon = styled(CheckCircleOutlineIcon)(({ theme }) => ({
   fontSize: 80,
   color: theme.palette.success.main,
-  margin: theme.spacing(2, 'auto'),
+  margin: 'auto',
 }));
 
-const SuccessTitle = styled(DialogTitle)(({ theme }) => ({
+const SuccessTitle = styled(DialogTitle)(() => ({
   textAlign: 'center',
   fontWeight: 600,
   fontSize: '1.4rem',
 }));
 
-const SuccessContent = styled(DialogContent)(({ theme }) => ({
+const SuccessContent = styled(DialogContent)(() => ({
   textAlign: 'center',
 }));
 
-const SuccessMessage = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(3),
+const SuccessMessage = styled(Typography)(() => ({
+  marginBottom: 12,
   fontSize: '1.1rem',
 }));
 

@@ -15,7 +15,7 @@ interface CompanyRatingProps {
   overallRating: number;
   ratingText: string;
   reviewsCount: number;
-  ratingDistribution: RatingDistribution[];
+  ratingDistribution?: RatingDistribution[];
   categoryRatings: CategoryRating[];
 }
 
@@ -23,7 +23,6 @@ export const CompanyRating: React.FC<CompanyRatingProps> = ({
   overallRating,
   ratingText,
   reviewsCount,
-  ratingDistribution,
   categoryRatings,
 }) => {
   return (
