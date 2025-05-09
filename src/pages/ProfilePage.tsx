@@ -24,7 +24,7 @@ import { isAuthenticated, ReviewApi, User, UserService } from '../shared/api'
 import { Seo } from '../shared/components'
 import { ReviewWithDetails } from '../shared/types'
 
-const PageHeader = styled(Box)(({ theme }) => ({
+const PageHeader = styled(Box)(() => ({
   backgroundColor: '#f9f9f9',
   padding: '40px 0',
   marginBottom: '30px',
@@ -43,7 +43,7 @@ const UserAvatar = styled(Avatar)(({ theme }) => ({
   },
 }))
 
-const ProfileSection = styled(Box)(({ theme }) => ({
+const ProfileSection = styled(Box)(() => ({
   marginBottom: 30,
 }))
 
@@ -68,7 +68,7 @@ const StyledTab = styled(Tab)({
   minHeight: '48px',
 })
 
-const ReviewCard = styled(Card)(({ theme }) => ({
+const ReviewCard = styled(Card)(() => ({
   padding: 24,
   marginBottom: 20,
   boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12)',
@@ -112,7 +112,7 @@ const ReviewStatusChip = styled(Chip)<{ status: string }>(({ theme, status }) =>
   }
 })
 
-const ModeratorComment = styled(Box)(({ theme }) => ({
+const ModeratorComment = styled(Box)(() => ({
   margin: '16px 0',
   padding: '12px 16px',
   borderRadius: 8,
@@ -120,7 +120,7 @@ const ModeratorComment = styled(Box)(({ theme }) => ({
   borderLeft: '4px solid #2f7ee6',
 }))
 
-const CompanyInfoBox = styled(Box)(({ theme }) => ({
+const CompanyInfoBox = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   marginBottom: 16,

@@ -18,7 +18,7 @@ const LoadingContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
 }));
 
-const FullPageContainer = styled(Box)(({ theme }) => ({
+const FullPageContainer = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',

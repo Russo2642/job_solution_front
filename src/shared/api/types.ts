@@ -1,7 +1,14 @@
-import { CategoryRating, City, Company, Industry, Pagination } from '../types';
+import { CategoryRating, City, Company, Industry } from '../types';
 import { ReviewWithDetails } from '../types';
 import { User } from '../types';
 import { Tokens } from './services';
+
+export interface Pagination {
+    limit: number;
+    page: number;
+    pages: number;
+    total: number;
+}
 
 export interface RegisterRequest {
     email: string;
