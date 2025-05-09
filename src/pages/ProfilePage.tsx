@@ -89,7 +89,7 @@ const CompanyLogo = styled('img')({
   border: '1px solid #eee',
 })
 
-const ReviewStatusChip = styled(Chip)<{ status: string }>(({ theme, status }) => {
+const ReviewStatusChip = styled(Chip)<{ status: string }>(({ status }) => {
   let color = '#f0f7ff';
   let textColor = '#2f7ee6';
 
