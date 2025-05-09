@@ -54,7 +54,68 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
           script: |
+            set -e
+            
             cd ~
-            docker pull ${{ secrets.DOCKER_USERNAME }}/job_solution_frontend:latest
-            docker-compose down
-            docker-compose up -d 
+            
+            # Настройка переменной окружения для сценариев
+            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
+            
+            # Проверка существования docker-compose.yml
+            if [ ! -f "docker-compose.yml" ]; then
+              echo "Ошибка: docker-compose.yml не найден!"
+              exit 1
+            fi
+            
+            # Загрузка последнего образа фронтенда
+            docker pull $DOCKER_USERNAME/job_solution_frontend:latest
+            
+            # Обновление конфигурации docker-compose для фронтенда
+            # Создаём резервную копию
+            cp docker-compose.yml docker-compose.yml.bak
+            
+            # Проверяем наличие сервиса frontend в docker-compose.yml
+            if grep -q "frontend:" docker-compose.yml; then
+              echo "Сервис frontend уже существует в docker-compose.yml."
+            else
+              echo "Добавляем сервис frontend в docker-compose.yml..."
+              # Добавление сервиса frontend в docker-compose.yml
+              cat >> docker-compose.yml <<EOL
+              
+  frontend:
+    image: ${DOCKER_USERNAME}/job_solution_frontend:latest
+    container_name: job_solution_frontend
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      - REACT_APP_API_URL=http://app:8080
+    networks:
+      - app_network
+EOL
+            fi
+            
+            # Принудительная остановка всех старых контейнеров
+            echo "Остановка всех старых контейнеров..."
+            docker-compose down || true
+            
+            # Проверка на наличие "зависших" контейнеров и их удаление
+            if docker ps -a | grep "job_solution_"; then
+              echo "Обнаружены старые контейнеры, удаляем их принудительно..."
+              docker ps -a | grep "job_solution_" | awk '{print $1}' | xargs -r docker rm -f
+            fi
+            
+            # Запуск контейнеров
+            echo "Запуск контейнеров..."
+            docker-compose up -d
+            
+            # Очистка неиспользуемых образов
+            docker image prune -af
+            
+            # Проверка статуса
+            echo "Статус контейнеров:"
+            docker-compose ps
+            
+            # Проверка логов фронтенда
+            echo "Логи фронтенда:"
+            docker-compose logs --tail=20 frontend 
