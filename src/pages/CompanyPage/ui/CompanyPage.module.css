@@ -1,0 +1,404 @@
+.companyPage {
+  width: 100%;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.contentContainer {
+  display: flex;
+  margin-top: 20px;
+  gap: 30px;
+}
+
+.sidebar {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.mainContent {
+  flex-grow: 1;
+}
+
+.filtersContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.reviewsContainer {
+  margin-top: 30px;
+}
+
+.noReviews {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: #555;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.noReviews:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.pageButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.pageButton:hover {
+  background-color: #f0f7ff;
+  border-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.activePage {
+  background-color: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.activePage:hover {
+  background-color: #1d4ed8;
+}
+
+.loading, .error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  font-size: 18px;
+}
+
+/* Улучшенная адаптивность */
+@media (max-width: 1024px) {
+  .container {
+    padding: 20px 15px;
+  }
+  
+  .contentContainer {
+    gap: 20px;
+  }
+  
+  .sidebar {
+    width: 280px;
+  }
+}
+
+@media (max-width: 992px) {
+  .contentContainer {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    order: 2; /* Перемещаем сайдбар под основное содержимое */
+  }
+  
+  .mainContent {
+    order: 1; /* Основное содержимое сверху */
+  }
+  
+  .filtersContainer {
+    overflow-x: auto;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  
+  .filtersContainer::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .filtersContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px 12px;
+  }
+  
+  .contentContainer {
+    margin-top: 15px;
+    gap: 15px;
+  }
+  
+  .sidebar {
+    margin-top: 15px;
+  }
+  
+  .filtersContainer {
+    gap: 6px;
+  }
+  
+  .pagination {
+    gap: 5px;
+  }
+  
+  .pageButton {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 12px 10px;
+  }
+  
+  .contentContainer {
+    margin-top: 12px;
+    gap: 12px;
+  }
+  
+  .reviewsContainer {
+    margin-top: 20px;
+  }
+  
+  .filtersContainer {
+    margin-bottom: 12px;
+  }
+  
+  .loading, .error {
+    font-size: 16px;
+  }
+}
+
+/* Добавляем стили для блока похожих компаний */
+.similarCompanies {
+  margin-top: 24px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.similarCompanies:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.sidebarTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: #555;
+  position: relative;
+  padding-bottom: 6px;
+}
+
+.sidebarTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background-color: #1976d2;
+  transition: width 0.3s ease;
+}
+
+.similarCompanies:hover .sidebarTitle::after {
+  width: 60px;
+}
+
+.similarCompaniesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.similarCompanyItem {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  padding: 10px 8px;
+}
+
+.similarCompanyItem:hover {
+  background-color: #f5f9ff;
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.similarCompanyItem:last-child {
+  border-bottom: none;
+}
+
+.similarCompanyLogo {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 12px;
+}
+
+.similarCompanyLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.similarCompanyItem:hover .similarCompanyLogo img {
+  transform: scale(1.1);
+}
+
+.similarCompanyInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.similarCompanyName {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.similarCompanyReviews {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.similarCompanyRating {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+
+.similarCompanyItem:hover .similarCompanyRating {
+  transform: scale(1.1);
+}
+
+.noSimilarCompanies {
+  padding: 10px 0;
+  color: #777;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Адаптивные стили для мобильного сайдбара */
+@media (max-width: 992px) {
+  .similarCompanies {
+    margin-top: 5px;
+  }
+  
+  .similarCompaniesList {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  
+  .similarCompaniesList::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .similarCompaniesList::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+  
+  .similarCompanyItem {
+    min-width: 200px;
+    max-width: 250px;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 12px;
+    margin-right: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+  }
+  
+  .similarCompanyItem:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .similarCompanyLogo {
+    width: 48px;
+    height: 48px;
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+  
+  .similarCompanyInfo {
+    width: 100%;
+  }
+  
+  .similarCompanyRating {
+    margin-left: 0;
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 576px) {
+  .similarCompanyItem {
+    min-width: 150px;
+    max-width: 200px;
+    padding: 10px;
+  }
+  
+  .similarCompanyLogo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .similarCompanyName {
+    font-size: 13px;
+  }
+  
+  .similarCompanyReviews, .similarCompanyRating {
+    font-size: 12px;
+  }
+} 

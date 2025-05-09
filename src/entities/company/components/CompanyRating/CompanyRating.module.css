@@ -1,0 +1,91 @@
+.ratingContainer {
+  display: flex;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  margin-bottom: 24px;
+  gap: 40px;
+}
+
+.ratingColumn {
+  flex: 1;
+}
+
+.categoryColumn {
+  flex: 1;
+}
+
+.ratingTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 16px 0;
+}
+
+.overallRatingContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.overallRating {
+  font-size: 48px;
+  font-weight: 700;
+  color: #333;
+  margin-right: 16px;
+}
+
+.ratingDescription {
+  display: flex;
+  flex-direction: column;
+}
+
+.ratingText {
+  font-weight: 500;
+  font-size: 16px;
+  color: #333;
+}
+
+.reviewsCount {
+  font-size: 14px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.categoryContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.categoryRow {
+  display: flex;
+  align-items: center;
+}
+
+.categoryStars {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.starRating {
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.starIcon {
+  color: #FFD700;
+}
+
+.categoryName {
+  color: #555;
+}
+
+.noRatings {
+  color: #666;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+} 

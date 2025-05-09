@@ -1,0 +1,149 @@
+.contactsContainer {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contactsContainer:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #555;
+  position: relative;
+  padding-bottom: 6px;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background-color: #2563eb;
+  transition: width 0.3s ease;
+}
+
+.contactsContainer:hover .sectionTitle::after {
+  width: 50px;
+}
+
+.contactsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.3s ease;
+}
+
+.contactItem:hover {
+  transform: translateX(5px);
+}
+
+.contactIcon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  color: #2563eb;
+  transition: transform 0.3s ease;
+}
+
+.contactItem:hover .contactIcon {
+  transform: rotate(5deg);
+}
+
+.contactValue {
+  font-size: 14px;
+  color: #555;
+}
+
+.contactLink {
+  font-size: 14px;
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contactLink:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+.industrySection {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.industryTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.industryTag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  margin: 0 4px 5px 0;
+  cursor: default;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.industryTag:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.bankingTag {
+  background-color: #e1f5fe;
+  color: #0277bd;
+}
+
+.fintechTag {
+  background-color: #e8eaf6;
+  color: #3949ab;
+}
+
+.financeTag {
+  background-color: #fff8e1;
+  color: #ff8f00;
+}
+
+.companySize {
+  margin-top: 24px;
+}
+
+.companySizeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.companySizeValue {
+  font-size: 14px;
+  color: #555;
+  transition: transform 0.3s ease;
+}
+
+.companySizeRow:hover .companySizeValue {
+  transform: scale(1.05);
+} 
