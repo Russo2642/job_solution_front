@@ -54,7 +54,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
           script: |
-            cd /home/ubuntu/job_solution
+            cd ~
             docker pull ${{ secrets.DOCKER_USERNAME }}/job_solution_frontend:latest
             docker-compose down
             docker-compose up -d 
