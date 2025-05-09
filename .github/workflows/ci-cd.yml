@@ -80,8 +80,8 @@ jobs:
             else
               echo "Добавляем сервис frontend в docker-compose.yml..."
               # Добавление сервиса frontend в docker-compose.yml
-              cat >> docker-compose.yml <<EOL
-              
+              cat >> docker-compose.yml << 'EOL'
+  
   frontend:
     image: ${DOCKER_USERNAME}/job_solution_frontend:latest
     container_name: job_solution_frontend
