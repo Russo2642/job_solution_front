@@ -80,10 +80,10 @@ jobs:
             else
               echo "Добавляем сервис frontend в docker-compose.yml..."
               # Добавление сервиса frontend в docker-compose.yml
-              cat >> docker-compose.yml << 'EOL'
-  
+              cat >> docker-compose.yml <<EOF
+
   frontend:
-    image: ${DOCKER_USERNAME}/job_solution_frontend:latest
+    image: \${DOCKER_USERNAME}/job_solution_frontend:latest
     container_name: job_solution_frontend
     restart: unless-stopped
     depends_on:
@@ -92,7 +92,7 @@ jobs:
       - REACT_APP_API_URL=http://app:8080
     networks:
       - app_network
-EOL
+EOF
             fi
             
             # Принудительная остановка всех старых контейнеров
