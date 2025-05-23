@@ -17,6 +17,7 @@ interface CompanyRatingProps {
   reviewsCount: number;
   ratingDistribution?: RatingDistribution[];
   categoryRatings: CategoryRating[];
+  recommendationPercentage?: number;
 }
 
 export const CompanyRating: React.FC<CompanyRatingProps> = ({
@@ -24,6 +25,7 @@ export const CompanyRating: React.FC<CompanyRatingProps> = ({
   ratingText,
   reviewsCount,
   categoryRatings,
+  recommendationPercentage,
 }) => {
   return (
     <div className={styles.ratingContainer}>
@@ -36,6 +38,23 @@ export const CompanyRating: React.FC<CompanyRatingProps> = ({
             <div className={styles.reviewsCount}>{reviewsCount} отзывов</div>
           </div>
         </div>
+        
+        {recommendationPercentage !== undefined && (
+          <div className={styles.recommendationContainer}>
+            <div className={styles.recommendationPercentage}>
+              {recommendationPercentage}%
+            </div>
+            <div className={styles.recommendationBar}>
+              <div 
+                className={styles.recommendationFill} 
+                style={{ width: `${recommendationPercentage}%` }}
+              ></div>
+            </div>
+            <div className={styles.recommendationText}>
+              рекомендуют
+            </div>
+          </div>
+        )}
       </div>
 
       <div className={styles.categoryColumn}>

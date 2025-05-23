@@ -13,6 +13,7 @@ export interface Company {
   city_id: number;
   reviews_count: number;
   average_rating: number;
+  recommendation_percentage?: number;
   founded_year?: number;
   created_at: string;
   updated_at: string;

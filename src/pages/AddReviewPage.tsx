@@ -388,21 +388,24 @@ const AddReviewPage = () => {
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
-    if (name === 'isFormerEmployee') {
-      setFormData({
-        ...formData,
-        isFormerEmployee: value === 'true',
-      });
-    } else if (name === 'is_recommended') {
-      setFormData({
-        ...formData,
-        is_recommended: value === 'true',
-      });
+    if (name === 'is_recommended') {
+      setFormData(prev => ({
+        ...prev,
+        is_recommended: value === '' ? false : value === 'true'
+      }));
+    } else if (name === "employmentTerm") {
+      const selectedPeriod = employmentPeriods.find(p => p.name === value);
+      if (selectedPeriod) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: value,
+          employmentPeriodId: selectedPeriod.id
+        }));
+      } else {
+        setFormData(prev => ({ ...prev, [name]: value }));
+      }
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   }
 
@@ -878,7 +881,7 @@ const AddReviewPage = () => {
                 <RadioGroup
                   row
                   name="is_recommended"
-                  value={formData.is_recommended.toString()}
+                  value={formData.is_recommended !== undefined ? formData.is_recommended.toString() : ''}
                   onChange={handleRadioChange}
                 >
                   <FormControlLabel
@@ -911,7 +914,6 @@ const AddReviewPage = () => {
                   !formData.cityId ||
                   !formData.employmentTypeId ||
                   !formData.employmentPeriodId ||
-                  formData.is_recommended === undefined ||
                   Object.values(formData.categoryRatings).every(rating => rating === 0)
                 }
               >

@@ -384,6 +384,7 @@ export const CompanyPage: React.FC = () => {
       name: company.name,
       rating: company.average_rating,
       reviewsCount: company.reviews_count,
+      recommendationPercentage: company.recommendation_percentage,
       industries: companyIndustries,
       socialLinks: {
         twitter: 'https://twitter.com',
@@ -599,6 +600,7 @@ export const CompanyPage: React.FC = () => {
               reviewsCount={companyData.reviewsCount}
               ratingDistribution={companyData.ratingDistribution}
               categoryRatings={companyData.categoryRatings}
+              recommendationPercentage={companyData.recommendationPercentage}
             />
 
             <div className={styles.reviewsContainer}>

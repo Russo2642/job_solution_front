@@ -53,6 +53,38 @@
   margin-top: 4px;
 }
 
+.recommendationContainer {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  max-width: 200px;
+}
+
+.recommendationPercentage {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.recommendationBar {
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.recommendationFill {
+  height: 100%;
+  background-color: #ffc107;
+  border-radius: 4px;
+}
+
+.recommendationText {
+  font-size: 14px;
+  color: #777;
+}
+
 .categoryContainer {
   display: flex;
   flex-direction: column;
