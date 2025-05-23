@@ -17,7 +17,8 @@ export class ReviewApi {
                 employment_type_id: reviewData.employment_type_id,
                 is_former_employee: reviewData.is_former_employee,
                 position: reviewData.position,
-                pros: reviewData.pros
+                pros: reviewData.pros,
+                is_recommended: reviewData.is_recommended
             };
 
             console.log('Данные для отправки на сервер:', apiRequest);

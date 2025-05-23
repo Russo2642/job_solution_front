@@ -31,6 +31,7 @@ export interface Review {
   employmentTerm?: string;
   location?: string;
   benefits?: string[];
+  is_recommended?: boolean;
 }
 
 export interface CategoryRating {
@@ -104,6 +105,7 @@ export interface ReviewFormData {
   employment_type_id: number;
   benefit_type_ids: number[];
   category_ratings: { [key: string]: number };
+  is_recommended: boolean;
   
   // Дополнительные поля для формы (не отправляемые на сервер)
   employment_status?: string;

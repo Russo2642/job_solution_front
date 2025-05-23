@@ -99,6 +99,7 @@ interface ReviewFormState {
   pros: string;
   cons: string;
   benefitIds: number[];
+  is_recommended: boolean;
 }
 
 const initialFormData: ReviewFormState = {
@@ -115,6 +116,7 @@ const initialFormData: ReviewFormState = {
   pros: '',
   cons: '',
   benefitIds: [],
+  is_recommended: false,
 }
 
 const FormContainer = styled(Paper)(({ theme }) => ({
@@ -384,21 +386,23 @@ const AddReviewPage = () => {
   }
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-
-    if (name === "employmentTerm") {
-      const selectedPeriod = employmentPeriods.find(p => p.name === value)
-      if (selectedPeriod) {
-        setFormData(prev => ({
-          ...prev,
-          [name]: value,
-          employmentPeriodId: selectedPeriod.id
-        }))
-      } else {
-        setFormData(prev => ({ ...prev, [name]: value }))
-      }
+    const { name, value } = e.target;
+    
+    if (name === 'isFormerEmployee') {
+      setFormData({
+        ...formData,
+        isFormerEmployee: value === 'true',
+      });
+    } else if (name === 'is_recommended') {
+      setFormData({
+        ...formData,
+        is_recommended: value === 'true',
+      });
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }))
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
     }
   }
 
@@ -467,7 +471,8 @@ const AddReviewPage = () => {
       employment_period_id: formData.employmentPeriodId,
       employment_type_id: formData.employmentTypeId,
       benefit_type_ids: formData.benefitIds.slice(0, 3),
-      category_ratings: categoryRatingsForApi
+      category_ratings: categoryRatingsForApi,
+      is_recommended: formData.is_recommended
     };
 
     try {
@@ -868,6 +873,26 @@ const AddReviewPage = () => {
                   </StyledGrid>
                 </FormGroup>
               </FormControl>
+              <FormControl component="fieldset" margin="normal" fullWidth>
+                <FormLabel>Рекомендуете ли вы другим данную компанию?</FormLabel>
+                <RadioGroup
+                  row
+                  name="is_recommended"
+                  value={formData.is_recommended.toString()}
+                  onChange={handleRadioChange}
+                >
+                  <FormControlLabel
+                    value="true"
+                    control={<Radio />}
+                    label="Да, рекомендую"
+                  />
+                  <FormControlLabel
+                    value="false"
+                    control={<Radio />}
+                    label="Нет, не рекомендую"
+                  />
+                </RadioGroup>
+              </FormControl>
             </FormSection>
             <Box display="flex" justifyContent="space-between" mt={2}>
               <Button onClick={handleBack} startIcon={<ArrowBackIcon />}>
@@ -886,6 +911,7 @@ const AddReviewPage = () => {
                   !formData.cityId ||
                   !formData.employmentTypeId ||
                   !formData.employmentPeriodId ||
+                  formData.is_recommended === undefined ||
                   Object.values(formData.categoryRatings).every(rating => rating === 0)
                 }
               >
