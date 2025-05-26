@@ -2,9 +2,13 @@ import { ReviewFormData } from '../types';
 import { httpClient } from './httpClient';
 import { CompanyReviewsResponse, ReviewActionResponse, ReviewCreateResponse } from './types';
 
+export interface ModerationAction {
+    moderation_comment: string;
+    status: 'approved' | 'rejected';
+}
+
 export class ReviewApi {
     static async createReview(reviewData: ReviewFormData): Promise<ReviewCreateResponse> {
-        console.log('Подготовка данных для отправки отзыва:', reviewData);
 
         try {
             const apiRequest = {
@@ -21,14 +25,9 @@ export class ReviewApi {
                 is_recommended: reviewData.is_recommended
             };
 
-            console.log('Данные для отправки на сервер:', apiRequest);
-
             const response = await httpClient.post<ReviewCreateResponse>('/reviews', apiRequest);
-
-            console.log('Успешный ответ от сервера:', response);
             return response;
         } catch (error) {
-            console.error('Ошибка при отправке отзыва:', error);
             throw error;
         }
     }
@@ -51,5 +50,23 @@ export class ReviewApi {
         }
 
         return httpClient.get<CompanyReviewsResponse>(`/user/reviews?${params.toString()}`);
+    }
+    
+    static async getPendingReviews(page = 1, limit = 10): Promise<CompanyReviewsResponse> {
+        const params = new URLSearchParams();
+        params.append('page', page.toString());
+        params.append('limit', limit.toString());
+        
+        return httpClient.get<CompanyReviewsResponse>(`/reviews/moderation/pending?${params.toString()}`);
+    }
+    
+    // Одобрение отзыва
+    static async approveReview(reviewId: number, data: ModerationAction): Promise<ReviewActionResponse> {
+        return httpClient.put<ReviewActionResponse>(`/reviews/${reviewId}/approve`, data);
+    }
+    
+    // Отклонение отзыва
+    static async rejectReview(reviewId: number, data: ModerationAction): Promise<ReviewActionResponse> {
+        return httpClient.put<ReviewActionResponse>(`/reviews/${reviewId}/reject`, data);
     }
 } 

@@ -2,6 +2,8 @@ import { styled } from '@mui/material/styles'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Footer, Header } from '../components'
 import { useEffect } from 'react'
+import { ApiClient } from '../api'
+import { useAuth } from '../../entities/auth/context/AuthContext'
 
 const MainContainer = styled('div')({
   display: 'flex',
@@ -30,6 +32,7 @@ const ContentContainer = styled('main')(({ theme }) => ({
 
 const MainLayout = () => {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   
   useEffect(() => {
@@ -47,6 +50,20 @@ const MainLayout = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+  
+  useEffect(() => {
+    const checkToken = async () => {
+      if (isAuthenticated && !isAuthPage) {
+        try {
+          await ApiClient.checkAndRefreshToken();
+        } catch (e) {
+          console.error('Ошибка при проверке токена при навигации:', e);
+        }
+      }
+    };
+    
+    checkToken();
+  }, [location.pathname, isAuthenticated, isAuthPage]);
   
   return (
     <MainContainer>

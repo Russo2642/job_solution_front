@@ -36,10 +36,9 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../entities/auth/context/AuthContext'
 import { City, CompanyWithDetails } from '../entities/company/types'
 import { ReviewFormData } from '../entities/review/types'
-import { CompanyApi, ReviewApi, CityApi, httpClient } from '../shared/api'
+import { CompanyApi, ReviewApi, CityApi, httpClient, ApiClient } from '../shared/api'
 import { LoadingIndicator, Seo } from '../shared/components'
 
-// Интерфейсы для ответов API
 interface ApiResponse<T> {
   data: T;
   success: boolean;
@@ -453,6 +452,20 @@ const AddReviewPage = () => {
     if (!selectedCompany) {
       setSubmitError('Компания не найдена');
       setSubmitting(false);
+      return;
+    }
+
+    try {
+      await ApiClient.checkAndRefreshToken();
+    } catch (e) {
+      console.error('Ошибка при проверке токена перед отправкой отзыва:', e);
+      setSubmitError('Ошибка авторизации. Пожалуйста, войдите заново.');
+      setSubmitting(false);
+      
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+      
       return;
     }
 

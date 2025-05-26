@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../../../shared/types';
-import { TokenService, UserService, isAuthenticated } from '../../../shared/api';
+import { TokenService, UserService, isAuthenticated, ApiClient } from '../../../shared/api';
 
 interface AuthContextType {
   user: User | null;
@@ -22,7 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loggingOut, setLoggingOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const checkAuth = () => {
+  const checkAuth = async () => {
     const isAuth = isAuthenticated();
     const currentUser = UserService.getUser();
     
@@ -30,7 +30,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       UserService.clearUser();
       TokenService.clearTokens();
-    } else if (currentUser && (!user || user.id !== currentUser.id)) {
+      setLoading(false);
+      return;
+    }
+    
+    // Проверяем и обновляем токен, если он скоро истечет
+    try {
+      await ApiClient.checkAndRefreshToken();
+    } catch (e) {
+      console.error('Ошибка при проверке токена в AuthContext:', e);
+    }
+    
+    if (currentUser && (!user || user.id !== currentUser.id)) {
       setUser(currentUser);
     }
     
@@ -54,9 +65,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     window.addEventListener('auth-changed', handleCustomEvent);
     
+    const intervalId = setInterval(() => {
+      checkAuth();
+    }, 60000);
+    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('auth-changed', handleCustomEvent);
+      clearInterval(intervalId);
     };
   }, []);
 

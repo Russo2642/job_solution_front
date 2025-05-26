@@ -8,8 +8,24 @@ import RegisterPage from './pages/RegisterPage'
 import { AuthGuard, ProtectedRoute, CookieConsent, AdminRoute } from './shared/components'
 import { CompanyPage } from './pages/CompanyPage'
 import AdminPage from './pages/AdminPage'
+import { useEffect } from 'react'
+import { ApiClient } from './shared/api'
 
 function App() {
+  useEffect(() => {
+    const tokenRefreshInterval = setInterval(async () => {
+      try {
+        await ApiClient.checkAndRefreshToken();
+      } catch (e) {
+        console.error('Ошибка при проверке токена:', e);
+      }
+    }, 5 * 60 * 1000);
+
+    return () => {
+      clearInterval(tokenRefreshInterval);
+    };
+  }, []);
+
   return (
     <>
       <Routes>

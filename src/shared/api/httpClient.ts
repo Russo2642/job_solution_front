@@ -46,31 +46,12 @@ export class HttpClient {
             ...options,
             headers,
         };
-        
-        console.log(`📤 API Запрос: ${options.method || 'GET'} ${url}`);
-        console.log('Заголовки:', headers);
-        if (options.body) {
-            try {
-                if (options.body instanceof FormData) {
-                    console.log('Тело запроса: [FormData]');
-                } else {
-                    console.log('Тело запроса:', typeof options.body === 'string' 
-                        ? JSON.parse(options.body) 
-                        : options.body);
-                }
-            } catch (e) {
-                console.log('Тело запроса (не удалось распарсить):', options.body);
-            }
-        }
 
         try {
             const response = await fetch(url, requestOptions);
-            
-            console.log(`📥 API Ответ: ${response.status} ${response.statusText} от ${url}`);
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Данные ответа:', data);
                 return data;
             }
 
@@ -90,8 +71,6 @@ export class HttpClient {
                         ...requestOptions,
                         headers,
                     });
-                    
-                    console.log(`📥 API Повторный ответ: ${retryResponse.status} ${retryResponse.statusText} от ${url}`);
 
                     if (!retryResponse.ok) {
                         const errorMessage = getErrorMessage(retryResponse.status);
@@ -99,7 +78,6 @@ export class HttpClient {
                     }
 
                     const data = await retryResponse.json();
-                    console.log('Данные повторного ответа:', data);
                     return data;
                 } catch (refreshError) {
                     TokenService.clearTokens();

@@ -135,13 +135,63 @@ export const getErrorMessage = (status: number, message?: string): string => {
 };
 
 export class ApiClient {
+    static decodeToken(token: string): any {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            console.error('Ошибка при декодировании токена:', e);
+            return null;
+        }
+    }
+
+    static async checkAndRefreshToken(): Promise<string | null> {
+        const accessToken = TokenService.getAccessToken();
+        const refreshToken = TokenService.getRefreshToken();
+
+        if (!accessToken || !refreshToken) {
+            return null;
+        }
+
+        try {
+            const payload = ApiClient.decodeToken(accessToken);
+            if (!payload || !payload.exp) {
+                return null;
+            }
+
+            const expirationTime = payload.exp * 1000;
+            const currentTime = Date.now();
+            const timeRemaining = expirationTime - currentTime;
+
+            if (timeRemaining < 120000) {
+                return await ApiClient.refreshTokenAndRetry(refreshToken);
+            }
+
+            return accessToken;
+        } catch (e) {
+            console.error('Ошибка при проверке токена:', e);
+            return accessToken;
+        }
+    }
+
     static async request<T>(url: string, options: RequestInit = {}): Promise<T> {
         const headers: Record<string, string> = {
             'Accept': 'application/json',
             ...(options.headers as Record<string, string> || {})
         };
 
-        const accessToken = TokenService.getAccessToken();
+        let accessToken = null;
+        try {
+            accessToken = await ApiClient.checkAndRefreshToken();
+        } catch (e) {
+            console.error('Ошибка при проактивном обновлении токена:', e);
+            accessToken = TokenService.getAccessToken();
+        }
+
         if (accessToken) {
             headers['Authorization'] = `Bearer ${accessToken}`;
         }
@@ -322,7 +372,7 @@ export class UserService {
 }
 
 export const isAuthenticated = (): boolean => {
-    return !!TokenService.getAccessToken();
+    return !!TokenService.getAccessToken() && !!TokenService.getRefreshToken();
 };
 
 export class CompanyApi {
@@ -411,41 +461,13 @@ export class IndustryApi {
 export class ReviewApi {
     static async createReview(reviewData: any): Promise<any> {
         const url = `${API_BASE_URL}/reviews`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${TokenService.getAccessToken()}`
-                },
-                body: JSON.stringify(reviewData),
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Детальная информация об ошибке:', errorText);
-
-                try {
-                    const errorJson = JSON.parse(errorText);
-                    console.error('Ошибка в формате JSON:', errorJson);
-
-                    if (errorJson.message) {
-                        throw new Error(`Ошибка API: ${errorJson.message}`);
-                    }
-                } catch (jsonError) {
-                }
-
-                throw new Error(`Ошибка запроса: ${response.status}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            console.error('Ошибка при создании отзыва в ReviewApi:', error);
-            console.error('Данные для создания отзыва:', JSON.stringify(reviewData, null, 2));
-            throw error;
-        }
+        return ApiClient.request(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reviewData),
+        });
     }
 
     static async markAsUseful(reviewId: number): Promise<any> {
