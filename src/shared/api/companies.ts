@@ -78,7 +78,7 @@ export class CompanyApi {
         return httpClient.get<CompanyReviewsResponse>(`/companies/${companyId}/reviews?${params.toString()}`);
     }
     
-    static async createCompany(data: CreateCompanyRequest): Promise<ApiResponse<{ company: any }>> {
-        return httpClient.post<ApiResponse<{ company: any }>>('/companies', data);
+    static async createCompany(data: CreateCompanyRequest): Promise<ApiResponse<{ company: Record<string, unknown> }>> {
+        return httpClient.post<ApiResponse<{ company: Record<string, unknown> }>>('/companies', data);
     }
 } 

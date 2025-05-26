@@ -37,7 +37,7 @@ import {
   Typography
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../entities/auth/context/AuthContext';
 import { CityApi } from '../shared/api/cities';
@@ -45,7 +45,6 @@ import { CompanyApi, CreateCompanyRequest } from '../shared/api/companies';
 import { IndustryApi } from '../shared/api/industries';
 import { ReviewApi, ModerationAction } from '../shared/api/reviews';
 import { City, Industry } from '../shared/types';
-import { ReviewWithDetails } from '../entities/review/types';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -401,7 +400,7 @@ const ManageCompanies: React.FC = () => {
 };
 
 const ManageReviews: React.FC = () => {
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<Record<string, any>[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -414,11 +413,7 @@ const ManageReviews: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  useEffect(() => {
-    fetchPendingReviews();
-  }, [page, limit]);
-
-  const fetchPendingReviews = async () => {
+  const fetchPendingReviews = useCallback(async () => {
     setLoading(true);
     setError(null);
     
@@ -436,7 +431,11 @@ const ManageReviews: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, limit]);
+
+  useEffect(() => {
+    fetchPendingReviews();
+  }, [page, limit, fetchPendingReviews]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);

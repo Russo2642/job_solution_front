@@ -9,27 +9,21 @@ export interface ModerationAction {
 
 export class ReviewApi {
     static async createReview(reviewData: ReviewFormData): Promise<ReviewCreateResponse> {
+        const apiRequest = {
+            benefit_type_ids: reviewData.benefit_type_ids || [],
+            category_ratings: reviewData.category_ratings || {},
+            city_id: reviewData.city_id,
+            company_id: reviewData.company_id,
+            cons: reviewData.cons,
+            employment_period_id: reviewData.employment_period_id,
+            employment_type_id: reviewData.employment_type_id,
+            is_former_employee: reviewData.is_former_employee,
+            position: reviewData.position,
+            pros: reviewData.pros,
+            is_recommended: reviewData.is_recommended
+        };
 
-        try {
-            const apiRequest = {
-                benefit_type_ids: reviewData.benefit_type_ids || [],
-                category_ratings: reviewData.category_ratings || {},
-                city_id: reviewData.city_id,
-                company_id: reviewData.company_id,
-                cons: reviewData.cons,
-                employment_period_id: reviewData.employment_period_id,
-                employment_type_id: reviewData.employment_type_id,
-                is_former_employee: reviewData.is_former_employee,
-                position: reviewData.position,
-                pros: reviewData.pros,
-                is_recommended: reviewData.is_recommended
-            };
-
-            const response = await httpClient.post<ReviewCreateResponse>('/reviews', apiRequest);
-            return response;
-        } catch (error) {
-            throw error;
-        }
+        return httpClient.post<ReviewCreateResponse>('/reviews', apiRequest);
     }
 
     static async markAsUseful(reviewId: number): Promise<ReviewActionResponse> {
