@@ -437,7 +437,7 @@ const ManageReviews: React.FC = () => {
     fetchPendingReviews();
   }, [page, limit, fetchPendingReviews]);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
