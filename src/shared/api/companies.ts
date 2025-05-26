@@ -3,8 +3,21 @@ import {
     CompaniesFilter, 
     CompaniesResponse, 
     CompanyDetailsResponse, 
-    CompanyReviewsResponse 
+    CompanyReviewsResponse,
+    ApiResponse
 } from './types';
+
+export interface CreateCompanyRequest {
+    name: string;
+    address: string;
+    city_id: number;
+    email: string;
+    industries: number[];
+    logo: string;
+    phone: string;
+    size: 'small' | 'medium' | 'large' | 'enterprise';
+    website: string;
+}
 
 export class CompanyApi {
     static async getCompanies(filters?: CompaniesFilter): Promise<CompaniesResponse> {
@@ -63,5 +76,9 @@ export class CompanyApi {
         if (isFormerEmployee !== undefined) params.append('is_former_employee', isFormerEmployee.toString());
 
         return httpClient.get<CompanyReviewsResponse>(`/companies/${companyId}/reviews?${params.toString()}`);
+    }
+    
+    static async createCompany(data: CreateCompanyRequest): Promise<ApiResponse<{ company: any }>> {
+        return httpClient.post<ApiResponse<{ company: any }>>('/companies', data);
     }
 } 

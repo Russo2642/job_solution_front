@@ -5,8 +5,9 @@ import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
-import { AuthGuard, ProtectedRoute, CookieConsent } from './shared/components'
+import { AuthGuard, ProtectedRoute, CookieConsent, AdminRoute } from './shared/components'
 import { CompanyPage } from './pages/CompanyPage'
+import AdminPage from './pages/AdminPage'
 
 function App() {
   return (
@@ -27,6 +28,11 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/add-review" element={<AddReviewPage />} />
             <Route path="/add-review/:companyId" element={<AddReviewPage />} />
+          </Route>
+          
+          {/* Маршруты администратора */}
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminPage />} />
           </Route>
         </Route>
       </Routes>

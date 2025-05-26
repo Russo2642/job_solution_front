@@ -7,3 +7,4 @@ export { default as Footer } from './Footer';
 export { default as Pagination } from './Pagination';
 export { default as LoadingIndicator } from './LoadingIndicator';
 export { default as CookieConsent } from './CookieConsent';
+export { default as AdminRoute } from './AdminRoute';
