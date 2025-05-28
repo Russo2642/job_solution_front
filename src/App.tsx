@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import MainLayout from './shared/layouts/MainLayout'
+import AdminLayout from './shared/layouts/AdminLayout'
 import AddReviewPage from './pages/AddReviewPage'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
@@ -45,10 +46,17 @@ function App() {
             <Route path="/add-review" element={<AddReviewPage />} />
             <Route path="/add-review/:companyId" element={<AddReviewPage />} />
           </Route>
-          
-          {/* Маршруты администратора */}
-          <Route element={<AdminRoute />}>
-            <Route path="/admin" element={<AdminPage />} />
+        </Route>
+        
+        {/* Маршруты администратора */}
+        <Route element={<AdminRoute />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminPage />} />
+            <Route path="dashboard" element={<AdminPage />} />
+            <Route path="users" element={<AdminPage />} />
+            <Route path="companies" element={<AdminPage />} />
+            <Route path="reviews" element={<AdminPage />} />
+            <Route path="settings" element={<AdminPage />} />
           </Route>
         </Route>
       </Routes>

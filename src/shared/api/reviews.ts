@@ -54,12 +54,10 @@ export class ReviewApi {
         return httpClient.get<CompanyReviewsResponse>(`/reviews/moderation/pending?${params.toString()}`);
     }
     
-    // Одобрение отзыва
     static async approveReview(reviewId: number, data: ModerationAction): Promise<ReviewActionResponse> {
         return httpClient.put<ReviewActionResponse>(`/reviews/${reviewId}/approve`, data);
     }
     
-    // Отклонение отзыва
     static async rejectReview(reviewId: number, data: ModerationAction): Promise<ReviewActionResponse> {
         return httpClient.put<ReviewActionResponse>(`/reviews/${reviewId}/reject`, data);
     }

@@ -2,6 +2,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import ClearIcon from '@mui/icons-material/Clear'
 import SearchIcon from '@mui/icons-material/Search'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import {
   Alert,
   Box,
@@ -248,24 +250,24 @@ const AddReviewPage = () => {
   const { isAuthenticated } = useAuth()
   const [activeStep, setActiveStep] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
-  const [filteredCompanies, setFilteredCompanies] = useState<CompanyWithDetails[]>([])
   const [companies, setCompanies] = useState<CompanyWithDetails[]>([])
+  const [filteredCompanies, setFilteredCompanies] = useState<CompanyWithDetails[]>([])
+  const [loading, setLoading] = useState(true)
   const [cities, setCities] = useState<City[]>([])
-  const [ratingCategories, setRatingCategories] = useState<RatingCategory[]>([])
-  const [benefitTypes, setBenefitTypes] = useState<BenefitType[]>([])
   const [employmentPeriods, setEmploymentPeriods] = useState<EmploymentPeriod[]>([])
   const [employmentTypes, setEmploymentTypes] = useState<EmploymentType[]>([])
-  const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState<ReviewFormState>({
-    ...initialFormData,
-    companyId: companyId || '',
-  })
-  const [submitting, setSubmitting] = useState(false)
-  const [submitError, setSubmitError] = useState<string | null>(null)
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
-  const [redirectCompanySlug, setRedirectCompanySlug] = useState<string>('')
-  const [isSearchLoading, setIsSearchLoading] = useState(false)
+  const [categories, setCategories] = useState<RatingCategory[]>([])
+  const [benefitTypes, setBenefitTypes] = useState<BenefitType[]>([])
   const [isSearchActive, setIsSearchActive] = useState(false)
+  const [isSearchLoading, setIsSearchLoading] = useState(false)
+  const [formData, setFormData] = useState<ReviewFormState>(initialFormData)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+  const [redirectCompanySlug, setRedirectCompanySlug] = useState<string | null>(null)
+  const [prosError, setProsError] = useState<string | null>(null)
+  const [consError, setConsError] = useState<string | null>(null)
+  
   const searchTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
@@ -277,16 +279,14 @@ const AddReviewPage = () => {
     const fetchData = async () => {
       setLoading(true)
       try {
-        // Получение списка городов
         const citiesResponse = await CityApi.getCities(1, 100)
         if (citiesResponse.success) {
           setCities(citiesResponse.data.cities)
         }
 
-        // Получение категорий рейтинга
         const categoriesResponse = await httpClient.get<ApiResponse<RatingCategoriesResponse>>('/rating-categories')
         if (categoriesResponse.success) {
-          setRatingCategories(categoriesResponse.data.categories)
+          setCategories(categoriesResponse.data.categories)
 
           const initialRatings: { [key: number]: number } = {}
           categoriesResponse.data.categories.forEach((category: RatingCategory) => {
@@ -299,25 +299,21 @@ const AddReviewPage = () => {
           }))
         }
 
-        // Получение типов льгот
         const benefitsResponse = await httpClient.get<ApiResponse<BenefitTypesResponse>>('/benefit-types')
         if (benefitsResponse.success) {
           setBenefitTypes(benefitsResponse.data.benefit_types)
         }
 
-        // Получение периодов трудоустройства
         const periodsResponse = await httpClient.get<ApiResponse<EmploymentPeriodsResponse>>('/employment-periods')
         if (periodsResponse.success) {
           setEmploymentPeriods(periodsResponse.data.employment_periods)
         }
 
-        // Получение типов занятости
         const typesResponse = await httpClient.get<ApiResponse<EmploymentTypesResponse>>('/employment-types')
         if (typesResponse.success) {
           setEmploymentTypes(typesResponse.data.employment_types)
         }
 
-        // Получение списка компаний
         const companiesResponse = await CompanyApi.getCompanies({
           limit: 100,
           page: 1
@@ -351,6 +347,22 @@ const AddReviewPage = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+    
+    if (name === 'pros') {
+      if (value.length < 10 && value.length > 0) {
+        setProsError('Минимальная длина - 10 символов')
+      } else {
+        setProsError(null)
+      }
+    }
+    
+    if (name === 'cons') {
+      if (value.length < 10 && value.length > 0) {
+        setConsError('Минимальная длина - 10 символов')
+      } else {
+        setConsError(null)
+      }
+    }
   }
 
   const handleRatingChange = (categoryId: number, value: number | null) => {
@@ -801,7 +813,7 @@ const AddReviewPage = () => {
                   <CircularProgress />
                 </Box>
               ) : (
-                ratingCategories.map(category => (
+                categories.map(category => (
                   <FormControl key={category.id} component="fieldset" margin="normal" fullWidth>
                     <RatingLabel>
                       <Box>
@@ -848,6 +860,20 @@ const AddReviewPage = () => {
                 rows={4}
                 placeholder="Расскажите о позитивном опыте работы в компании"
                 required
+                error={!!prosError}
+                helperText={prosError || `Минимум 10 символов. Введено: ${formData.pros.length}`}
+                FormHelperTextProps={{
+                  sx: { color: formData.pros.length >= 10 ? 'success.main' : '' }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    formData.pros.length > 0 && (
+                      formData.pros.length >= 10 ? 
+                        <CheckCircleIcon color="success" /> : 
+                        <ErrorOutlineIcon color="error" />
+                    )
+                  )
+                }}
               />
               <TextField
                 fullWidth
@@ -861,6 +887,20 @@ const AddReviewPage = () => {
                 rows={4}
                 placeholder="Расскажите о том, что можно было бы улучшить"
                 required
+                error={!!consError}
+                helperText={consError || `Минимум 10 символов. Введено: ${formData.cons.length}`}
+                FormHelperTextProps={{
+                  sx: { color: formData.cons.length >= 10 ? 'success.main' : '' }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    formData.cons.length > 0 && (
+                      formData.cons.length >= 10 ? 
+                        <CheckCircleIcon color="success" /> : 
+                        <ErrorOutlineIcon color="error" />
+                    )
+                  )
+                }}
               />
               <FormControl component="fieldset" margin="normal">
                 <FormLabel>Какие льготы предоставляет компания?</FormLabel>
@@ -922,7 +962,9 @@ const AddReviewPage = () => {
                   submitting ||
                   !formData.position ||
                   !formData.pros ||
+                  formData.pros.length < 10 ||
                   !formData.cons ||
+                  formData.cons.length < 10 ||
                   !formData.employment ||
                   !formData.cityId ||
                   !formData.employmentTypeId ||

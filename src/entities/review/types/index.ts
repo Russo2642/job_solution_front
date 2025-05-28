@@ -107,7 +107,6 @@ export interface ReviewFormData {
   category_ratings: { [key: string]: number };
   is_recommended: boolean;
   
-  // Дополнительные поля для формы (не отправляемые на сервер)
   employment_status?: string;
   employment_period?: string;
   salary?: number;

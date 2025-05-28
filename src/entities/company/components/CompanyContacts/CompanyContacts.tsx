@@ -43,9 +43,7 @@ export const CompanyContacts: React.FC<CompanyContactsProps> = ({
   const formatPhoneNumber = (phone: string): string => {
     const digits = phone.replace(/\D/g, '');
     
-    // Проверяем, есть ли 11 цифр (с учетом кода страны)
     if (digits.length === 11) {
-      // Форматируем как +7 (XXX) XXX-XX-XX
       return `+${digits[0]} (${digits.substring(1, 4)}) ${digits.substring(4, 7)}-${digits.substring(7, 9)}-${digits.substring(9, 11)}`;
     }
     

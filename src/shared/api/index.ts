@@ -497,13 +497,48 @@ export class ReviewApi {
 }
 
 export * from './auth';
-export * from './companies';
 export * from './cities';
+export * from './companies';
 export * from './industries';
 export * from './reviews';
+export * from './services';
+
+import { 
+  AdminApi,
+} from './admin';
+
+import type { 
+  AdminStatistics, 
+  AdminUser,
+  AdminCompany,
+  AdminCreateCompanyRequest,
+  UpdateCompanyRequest,
+  AdminUsersResponse,
+  AdminCompaniesResponse, 
+  AdminUserResponse,
+  AdminCompanyResponse,
+  AdminStatisticsResponse,
+  AdminUsersListResponse,
+  AdminCompaniesListResponse
+} from './admin';
+
+export { AdminApi };
+
+export type {
+  AdminStatistics,
+  AdminUser,
+  AdminCompany,
+  AdminCreateCompanyRequest,
+  UpdateCompanyRequest,
+  AdminUsersResponse,
+  AdminCompaniesResponse,
+  AdminUserResponse, 
+  AdminCompanyResponse,
+  AdminStatisticsResponse,
+  AdminUsersListResponse,
+  AdminCompaniesListResponse
+};
 
 export * from './types';
-
-export * from './services';
 
 export * from './httpClient';

@@ -34,7 +34,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
     
-    // Проверяем и обновляем токен, если он скоро истечет
     try {
       await ApiClient.checkAndRefreshToken();
     } catch (e) {
