@@ -4,6 +4,7 @@ import ClearIcon from '@mui/icons-material/Clear'
 import SearchIcon from '@mui/icons-material/Search'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import InfoIcon from '@mui/icons-material/Info'
 import {
   Alert,
   Box,
@@ -624,6 +625,15 @@ const AddReviewPage = () => {
             <FormTitle variant="h6">
               Выберите компанию для отзыва
             </FormTitle>
+            <Alert 
+              severity="info" 
+              icon={<InfoIcon />}
+              sx={{ mb: 2, borderRadius: 2 }}
+            >
+              <Typography variant="body2">
+                Все отзывы публикуются анонимно. Ваше имя и личные данные не будут раскрыты.
+              </Typography>
+            </Alert>
             <TextField
               fullWidth
               placeholder="Поиск компании"
@@ -686,7 +696,7 @@ const AddReviewPage = () => {
             </Box>
             <Box mt={2}>
               <Typography variant="body2" color="text.secondary">
-                Не нашли нужную компанию? <Link to="#">Предложить компанию</Link>
+                Не нашли нужную компанию? <Link to="/suggestions?type=company">Предложить компанию</Link>
               </Typography>
             </Box>
           </FormSection>

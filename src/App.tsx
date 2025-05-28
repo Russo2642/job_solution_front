@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
+import SuggestionsPage from './pages/SuggestionsPage'
 import { AuthGuard, ProtectedRoute, CookieConsent, AdminRoute } from './shared/components'
 import { CompanyPage } from './pages/CompanyPage'
 import AdminPage from './pages/AdminPage'
@@ -33,6 +34,7 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
           <Route path="/company/:slug" element={<CompanyPage />} />
+          <Route path="/suggestions" element={<SuggestionsPage />} />
           
           {/* Публичные маршруты - только для неавторизованных пользователей */}
           <Route element={<AuthGuard />}>
@@ -56,6 +58,7 @@ function App() {
             <Route path="users" element={<AdminPage />} />
             <Route path="companies" element={<AdminPage />} />
             <Route path="reviews" element={<AdminPage />} />
+            <Route path="suggestions" element={<AdminPage />} />
             <Route path="settings" element={<AdminPage />} />
           </Route>
         </Route>

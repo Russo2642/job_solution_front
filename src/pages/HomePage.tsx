@@ -1,6 +1,7 @@
 import ClearIcon from '@mui/icons-material/Clear'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import SearchIcon from '@mui/icons-material/Search'
+import InfoIcon from '@mui/icons-material/Info'
 import {
   Alert,
   Box,
@@ -59,6 +60,22 @@ const PageDescription = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     fontSize: '16px',
     marginBottom: '24px',
+  },
+}))
+
+const AnonymityBadge = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: 'rgba(25, 118, 210, 0.08)',
+  borderRadius: '24px',
+  padding: '6px 16px',
+  marginBottom: '32px',
+  width: 'fit-content',
+  margin: '0 auto 32px',
+  [theme.breakpoints.down('md')]: {
+    marginBottom: '24px',
+    padding: '4px 12px',
   },
 }))
 
@@ -452,18 +469,23 @@ const HomePage = () => {
   return (
     <MainSection>
       <Seo
-        title="JobSolution - Отзывы о работодателях и компаниях"
-        description="JobSolution - платформа для поиска отзывов о работодателях и компаниях. Узнавайте реальные мнения сотрудников перед трудоустройством."
+        title="JobSolution - Отзывы о компаниях от сотрудников"
+        description="Выбирайте работодателя осознанно с помощью реальных отзывов сотрудников. Читайте честные мнения о компаниях, зарплатах и условиях работы."
       />
 
       <ContentContainer>
         <Box display="flex" flexDirection="column" alignItems="center">
-          <PageTitle variant="h1">
-            Найди работу мечты
-          </PageTitle>
+          <PageTitle variant="h1">Отзывы о работодателях от сотрудников</PageTitle>
           <PageDescription>
-            Отзывы сотрудников с реальным опытом работы
+            Выбирайте работодателя осознанно с помощью реальных отзывов сотрудников
           </PageDescription>
+          
+          <AnonymityBadge>
+            <InfoIcon sx={{ color: 'primary.main', fontSize: '1.2rem', mr: 1 }} />
+            <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 500 }}>
+              Все отзывы публикуются анонимно
+            </Typography>
+          </AnonymityBadge>
         </Box>
 
         <SearchBarWrapper>

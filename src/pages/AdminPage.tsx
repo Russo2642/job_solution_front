@@ -9,6 +9,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import {
   Avatar,
   Box,
@@ -51,7 +52,8 @@ import {
   Rating,
   CircularProgress,
   Tooltip,
-  Stack
+  Stack,
+  Alert
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -61,6 +63,10 @@ import { AdminApi, AdminStatistics, AdminUser, AdminCompany, AdminCreateCompanyR
 import { CityApi, IndustryApi } from '../shared/api';
 import { City, Industry } from '../shared/types';
 import './AdminPage.css';
+import { httpClient } from '../shared/api/httpClient';
+import {
+  Visibility as VisibilityIcon
+} from '@mui/icons-material';
 
 const drawerWidth = 280;
 
@@ -1377,7 +1383,9 @@ const Reviews: React.FC<ReviewsProps> = ({ updatePendingReviewsCount }) => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           labelRowsPerPage="Строк на странице:"
-          labelDisplayedRows={({ from, to, count }) => `${from}–${to} из ${count}`}
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}–${to} из ${count}`
+          }
         />
       </Paper>
 
@@ -1537,6 +1545,303 @@ const Settings: React.FC = () => (
   </Box>
 );
 
+interface Suggestion {
+  id: number;
+  type: 'company' | 'suggestion';
+  text: string;
+  created_at: string;
+}
+
+interface SuggestionsApiResponse {
+  success: boolean;
+  data: {
+    suggestions: Suggestion[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
+interface DeleteApiResponse {
+  success: boolean;
+  message?: string;
+}
+
+const Suggestions: React.FC = () => {
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [deletingSuggestionId, setDeletingSuggestionId] = useState<number | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
+
+  const fetchSuggestions = async () => {
+    try {
+      setLoading(true);
+      const response = await httpClient.get<SuggestionsApiResponse>('/suggestions');
+      if (response.success && response.data && response.data.suggestions) {
+        setSuggestions(response.data.suggestions);
+      } else {
+        setError('Ошибка при загрузке предложений');
+        setSuggestions([]);
+      }
+    } catch (err) {
+      console.error('Ошибка при получении предложений:', err);
+      setError('Не удалось загрузить предложения');
+      setSuggestions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSuggestions();
+  }, []);
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleOpenDeleteDialog = (id: number) => {
+    setDeletingSuggestionId(id);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setDeletingSuggestionId(null);
+  };
+
+  const handleDeleteSuggestion = async () => {
+    if (!deletingSuggestionId) return;
+
+    try {
+      const response = await httpClient.delete<DeleteApiResponse>(`/suggestions/${deletingSuggestionId}`);
+      if (response.success) {
+        setSuggestions(suggestions.filter(suggestion => suggestion.id !== deletingSuggestionId));
+        setError('');
+      } else {
+        setError('Ошибка при удалении предложения');
+      }
+    } catch (err) {
+      console.error('Ошибка при удалении предложения:', err);
+      setError('Не удалось удалить предложение');
+    } finally {
+      handleCloseDeleteDialog();
+    }
+  };
+
+  const handleOpenDetailDialog = (suggestion: Suggestion) => {
+    setSelectedSuggestion(suggestion);
+    setDetailDialogOpen(true);
+  };
+
+  const handleCloseDetailDialog = () => {
+    setDetailDialogOpen(false);
+    setSelectedSuggestion(null);
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  return (
+    <Box>
+      <Typography variant="h4" mb={4} fontWeight={500}>
+        Предложения пользователей
+      </Typography>
+      
+      <Paper sx={{ borderRadius: 3, overflow: 'hidden' }}>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Alert severity="error" sx={{ m: 3 }}>
+            {error}
+          </Alert>
+        ) : (
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Тип</TableCell>
+                  <TableCell>Текст</TableCell>
+                  <TableCell>Дата создания</TableCell>
+                  <TableCell>Действия</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {suggestions.length > 0 ? (
+                  suggestions
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((suggestion) => (
+                      <TableRow key={suggestion.id}>
+                        <TableCell>{suggestion.id}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={suggestion.type === 'company' ? 'Компания' : 'Идея'}
+                            color={suggestion.type === 'company' ? 'primary' : 'info'}
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {suggestion.text.length > 50 
+                            ? `${suggestion.text.substring(0, 50)}...` 
+                            : suggestion.text}
+                        </TableCell>
+                        <TableCell>{formatDate(suggestion.created_at)}</TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Tooltip title="Просмотреть подробности">
+                              <IconButton
+                                color="primary"
+                                size="small"
+                                onClick={() => handleOpenDetailDialog(suggestion)}
+                              >
+                                <VisibilityIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Удалить">
+                              <IconButton
+                                color="error"
+                                size="small"
+                                onClick={() => handleOpenDeleteDialog(suggestion.id)}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      Предложений пока нет
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={suggestions.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              labelRowsPerPage="Строк на странице:"
+              labelDisplayedRows={({ from, to, count }) =>
+                `${from}–${to} из ${count}`
+              }
+            />
+          </TableContainer>
+        )}
+      </Paper>
+
+      {/* Диалог подтверждения удаления */}
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+        <DialogTitle>Удаление предложения</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Вы уверены, что хотите удалить это предложение? Это действие нельзя отменить.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>Отмена</Button>
+          <Button onClick={handleDeleteSuggestion} color="error" variant="contained">
+            Удалить
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Диалог просмотра деталей */}
+      <Dialog
+        open={detailDialogOpen}
+        onClose={handleCloseDetailDialog}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          Детали предложения
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseDetailDialog}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {selectedSuggestion && (
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Chip
+                  label={selectedSuggestion.type === 'company' ? 'Компания' : 'Идея'}
+                  color={selectedSuggestion.type === 'company' ? 'primary' : 'info'}
+                  sx={{ mr: 2 }}
+                />
+                <Typography variant="body2" color="text.secondary">
+                  Создано: {formatDate(selectedSuggestion.created_at)}
+                </Typography>
+              </Box>
+              <Typography variant="h6" gutterBottom>
+                Содержание:
+              </Typography>
+              <Paper
+                variant="outlined"
+                sx={{ p: 2, borderRadius: 2, backgroundColor: '#f9f9f9' }}
+              >
+                <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                  {selectedSuggestion.text}
+                </Typography>
+              </Paper>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDetailDialog}>Закрыть</Button>
+          {selectedSuggestion && (
+            <Button
+              color="error"
+              variant="outlined"
+              onClick={() => {
+                handleCloseDetailDialog();
+                handleOpenDeleteDialog(selectedSuggestion.id);
+              }}
+              startIcon={<DeleteIcon />}
+            >
+              Удалить
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+};
+
 const AdminPage: React.FC = () => {
   const { user } = useAuth();
   const { activeSection, setActiveSection } = useAdmin();
@@ -1566,6 +1871,7 @@ const AdminPage: React.FC = () => {
       component: <Reviews updatePendingReviewsCount={updatePendingReviewsCount} />, 
       badge: pendingReviewsCount 
     },
+    { id: 'suggestions', text: 'Предложения', icon: <LightbulbIcon />, component: <Suggestions /> },
     { id: 'settings', text: 'Настройки', icon: <SettingsIcon />, component: <Settings /> }
   ];
 

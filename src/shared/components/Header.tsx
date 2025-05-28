@@ -3,6 +3,7 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import MenuIcon from '@mui/icons-material/Menu'
 import RateReviewIcon from '@mui/icons-material/RateReview'
 import LoginIcon from '@mui/icons-material/Login'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import {
     AppBar,
     Avatar,
@@ -18,7 +19,8 @@ import {
     Toolbar,
     Typography,
     useMediaQuery,
-    useTheme
+    useTheme,
+    Tooltip
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import React, { useState } from 'react'
@@ -66,6 +68,36 @@ const MobileNavItem = styled(Button)(({ theme }) => ({
     textAlign: 'left',
     textTransform: 'none',
     fontWeight: 500,
+}))
+
+const LoginIconButton = styled(IconButton)(({ theme }) => ({
+    color: theme.palette.primary.main,
+    transition: 'transform 0.3s, color 0.3s',
+    '&:hover': {
+        transform: 'scale(1.1)',
+        color: theme.palette.primary.dark,
+        backgroundColor: 'rgba(25, 118, 210, 0.04)',
+    },
+}))
+
+const NavLink = styled(Link)(({ theme }) => ({
+    color: theme.palette.text.primary,
+    fontWeight: 500,
+    fontSize: '0.95rem',
+    transition: 'color 0.3s',
+    textDecoration: 'none',
+    '&:hover': {
+        color: theme.palette.primary.main,
+    },
+}))
+
+const CenteredBox = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(4),
 }))
 
 interface NavItem {
@@ -121,12 +153,13 @@ const Header: React.FC = () => {
         : [
             { label: 'Мой профиль', path: '/profile' },
             { label: 'Оставить отзыв', path: '/add-review' },
+            { label: 'Помогите нам стать лучше', path: '/suggestions', icon: <HelpOutlineIcon fontSize="small" /> },
         ]
 
     return (
         <StyledAppBar position="sticky">
             <Container maxWidth="xl">
-                <Toolbar disableGutters sx={{ justifyContent: 'space-between', minHeight: 64 }}>
+                <Toolbar disableGutters sx={{ justifyContent: 'space-between', minHeight: 64, position: 'relative' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         {isMobile && (
                             <IconButton
@@ -146,63 +179,44 @@ const Header: React.FC = () => {
                         </LogoContainer>
                     </Box>
 
+                    {!isMobile && (
+                        <CenteredBox>
+                            {!isCompanyPage && (
+                                <>
+                                    <NavLink to="/add-review">
+                                        Оставить отзыв
+                                    </NavLink>
+                                    <NavLink to="/suggestions">
+                                        Помогите нам стать лучше
+                                    </NavLink>
+                                </>
+                            )}
+                        </CenteredBox>
+                    )}
+
                     {!isMobile ? (
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             {!user ? (
-                                <>
-                                    {!isCompanyPage && (
-                                        <Button
-                                            component={Link as any}
-                                            to="/add-review" 
-                                            variant="outlined" 
-                                            color="primary"
-                                            sx={{ 
-                                                marginLeft: 2, 
-                                                textTransform: 'none', 
-                                                fontWeight: 500, 
-                                                fontSize: '0.95rem' 
-                                            }}
-                                            startIcon={<RateReviewIcon />}
-                                        >
-                                            Оставить отзыв
-                                        </Button>
-                                    )}
-                                    <Button 
-                                        component={Link as any}
-                                        to="/login" 
-                                        variant={isCompanyPage ? "outlined" : "contained"} 
-                                        color="primary"
-                                        sx={{ 
-                                            marginLeft: 2, 
-                                            textTransform: 'none', 
-                                            fontWeight: 500, 
-                                            fontSize: '0.95rem' 
+                                <Tooltip title="Войти">
+                                    <IconButton
+                                        component={Link}
+                                        to="/login"
+                                        aria-label="Войти"
+                                        sx={{
+                                            color: theme.palette.primary.main,
+                                            transition: 'transform 0.3s, color 0.3s',
+                                            '&:hover': {
+                                                transform: 'scale(1.1)',
+                                                color: theme.palette.primary.dark,
+                                                backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                                            },
                                         }}
-                                        startIcon={<LoginIcon />}
                                     >
-                                        Войти
-                                    </Button>
-                                </>
+                                        <LoginIcon />
+                                    </IconButton>
+                                </Tooltip>
                             ) : (
                                 <>
-                                    {!isCompanyPage && (
-                                        <Button
-                                            component={Link as any}
-                                            to="/add-review"
-                                            variant="contained"
-                                            color="primary"
-                                            sx={{ 
-                                                marginLeft: 2,
-                                                marginRight: 2,
-                                                textTransform: 'none', 
-                                                fontWeight: 500, 
-                                                fontSize: '0.95rem' 
-                                            }}
-                                            startIcon={<RateReviewIcon />}
-                                        >
-                                            Оставить отзыв
-                                        </Button>
-                                    )}
                                     <UserAvatar onClick={handleUserMenuOpen}>
                                         {user.first_name?.[0]?.toUpperCase() || <AccountCircleIcon />}
                                     </UserAvatar>
@@ -221,6 +235,12 @@ const Header: React.FC = () => {
                                                 <AccountCircleIcon fontSize="small" />
                                             </ListItemIcon>
                                             Мой профиль
+                                        </MenuItem>
+                                        <MenuItem onClick={() => handleNavigate('/suggestions')}>
+                                            <ListItemIcon>
+                                                <HelpOutlineIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            Помогите нам стать лучше
                                         </MenuItem>
                                         <Divider />
                                         <MenuItem onClick={handleLogout}>
@@ -254,13 +274,22 @@ const Header: React.FC = () => {
                                     </MobileNavItem>
                                 ))}
                                 {!user && (
-                                    <MobileNavItem 
-                                        onClick={() => handleNavigate('/add-review')} 
-                                        color="inherit"
-                                        startIcon={<RateReviewIcon fontSize="small" />}
-                                    >
-                                        Оставить отзыв
-                                    </MobileNavItem>
+                                    <>
+                                        <MobileNavItem 
+                                            onClick={() => handleNavigate('/add-review')} 
+                                            color="inherit"
+                                            startIcon={<RateReviewIcon fontSize="small" />}
+                                        >
+                                            Оставить отзыв
+                                        </MobileNavItem>
+                                        <MobileNavItem 
+                                            onClick={() => handleNavigate('/suggestions')} 
+                                            color="inherit"
+                                            startIcon={<HelpOutlineIcon fontSize="small" />}
+                                        >
+                                            Помогите нам стать лучше
+                                        </MobileNavItem>
+                                    </>
                                 )}
                                 {user && (
                                     <MobileNavItem onClick={handleLogout} color="inherit" sx={{ color: 'error.main' }}>
