@@ -1,5 +1,5 @@
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-export const API_BASE_URL = isLocalhost ? 'http://localhost:8080/api' : 'https://77.240.38.137:8080/api';
+export const API_BASE_URL = isLocalhost ? 'http://localhost:8080/api' : 'https://jobsolution.kz/api';
 
 import {
     CategoryRating,
