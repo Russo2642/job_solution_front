@@ -68,7 +68,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
         <div className={styles.ratingRow}>
           <div className={styles.ratingSquare}>{rating.toFixed(1)}</div>
           <div className={styles.stars}>{renderStars(rating)}</div>
-          <div className={styles.reviewsCount}>({reviewsCount} Отзывов)</div>
+          <div className={styles.reviewsCount}>{reviewsCount} отзывов</div>
         </div>
         <div className={styles.industries}>
           {industries.map((industry, index) => {
@@ -92,6 +92,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
       </div>
       <div className={styles.actionsContainer}>
         <button className={styles.reviewButton} onClick={onReviewClick}>
+          <span className={styles.reviewButtonIcon}>✎</span>
           Оставить отзыв
         </button>
         <div className={styles.socialLinks}>

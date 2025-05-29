@@ -7,11 +7,14 @@ import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
 import SuggestionsPage from './pages/SuggestionsPage'
+import PrivacyPage from './pages/PrivacyPage'
+import TermsPage from './pages/TermsPage'
 import { AuthGuard, ProtectedRoute, CookieConsent, AdminRoute } from './shared/components'
 import { CompanyPage } from './pages/CompanyPage'
 import AdminPage from './pages/AdminPage'
 import { useEffect } from 'react'
 import { ApiClient } from './shared/api'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 
 function App() {
   useEffect(() => {
@@ -35,11 +38,14 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="/company/:slug" element={<CompanyPage />} />
           <Route path="/suggestions" element={<SuggestionsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
           
           {/* Публичные маршруты - только для неавторизованных пользователей */}
           <Route element={<AuthGuard />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           </Route>
           
           {/* Защищенные маршруты - только для авторизованных пользователей */}

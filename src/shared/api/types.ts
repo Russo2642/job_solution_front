@@ -127,4 +127,17 @@ export interface ReviewActionResponse {
         message: string;
     };
     success: boolean;
+}
+
+export interface ForgotPasswordRequest {
+    email: string;
+    password: string;
+    password_confirm: string;
+}
+
+export interface ForgotPasswordResponse {
+    data: {
+        message: string;
+    };
+    success: boolean;
 } 

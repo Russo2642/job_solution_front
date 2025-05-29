@@ -5,6 +5,8 @@ export interface AdminStatistics {
   companies_count: number;
   reviews_count: number;
   pending_reviews: number;
+  approved_reviews: number;
+  rejected_reviews: number;
   cities_count: number;
   industries_count: number;
   benefit_types_count: number;
@@ -79,11 +81,11 @@ export interface Benefit {
 
 export interface AdminReviewDetail {
   review: AdminReview;
-  category_ratings: CategoryRating[];
-  benefits: Benefit[];
+  category_ratings?: CategoryRating[];
+  benefits?: Benefit[];
   company: {
     company: AdminCompany;
-    category_ratings: any;
+    category_ratings?: any;
     industries: {
       id: number;
       name: string;
@@ -273,11 +275,11 @@ export const AdminApi = {
   },
 
   getApprovedReviews: async (page: number, limit: number): Promise<AdminReviewsListResponse> => {
-    return ApiClient.request<AdminReviewsListResponse>(`${API_BASE_URL}/reviews?status=approved&page=${page}&limit=${limit}`);
+    return ApiClient.request<AdminReviewsListResponse>(`${API_BASE_URL}/admin/reviews/moderation/approved?page=${page}&limit=${limit}`);
   },
 
   getRejectedReviews: async (page: number, limit: number): Promise<AdminReviewsListResponse> => {
-    return ApiClient.request<AdminReviewsListResponse>(`${API_BASE_URL}/reviews?status=rejected&page=${page}&limit=${limit}`);
+    return ApiClient.request<AdminReviewsListResponse>(`${API_BASE_URL}/admin/reviews/moderation/rejected?page=${page}&limit=${limit}`);
   },
 
   approveReview: async (id: number, data: ModerationAction): Promise<{ success: boolean }> => {

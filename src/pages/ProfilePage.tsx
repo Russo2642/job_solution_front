@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Card,
   Chip,
   CircularProgress,
@@ -23,6 +24,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { isAuthenticated, ReviewApi, User, UserService } from '../shared/api'
 import { Seo } from '../shared/components'
 import { ReviewWithDetails } from '../shared/types'
+import { ProfileEditForm } from '../entities/user/components'
+import EditIcon from '@mui/icons-material/Edit'
 
 const PageHeader = styled(Box)(() => ({
   backgroundColor: '#f9f9f9',
@@ -165,19 +168,40 @@ const ProfilePage = () => {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalReviews, setTotalReviews] = useState(0)
+  const [isEditMode, setIsEditMode] = useState(false)
   const limit = 5
+
+  const refreshUserData = () => {
+    const userData = UserService.getUser();
+    if (userData) {
+      setUser(userData);
+    }
+  };
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      navigate('/login')
-      return
+      navigate('/login');
+      return;
     }
-
-    const userData = UserService.getUser()
-    setUser(userData)
-
-    fetchUserReviews()
-  }, [navigate, statusFilter, page])
+    
+    refreshUserData();
+    
+    const handleStorageChange = () => {
+      refreshUserData();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [navigate]);
+  
+  useEffect(() => {
+    if (user) {
+      fetchUserReviews();
+    }
+  }, [statusFilter, page, user]);
 
   const fetchUserReviews = async () => {
     try {
@@ -206,6 +230,37 @@ const ProfilePage = () => {
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value)
+  }
+
+  const handleEditProfile = () => {
+    setIsEditMode(true)
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditMode(false)
+  }
+
+  const handleUpdateSuccess = (updatedUser: User) => {
+    console.log('Обновление профиля, полученные данные:', updatedUser);
+    
+    if (!updatedUser) {
+      console.error('Ошибка: updatedUser равен undefined');
+      return;
+    }
+    
+    try {
+      UserService.setUser(updatedUser);
+      
+      setUser(updatedUser);
+      
+      setIsEditMode(false);
+      
+      fetchUserReviews();
+      
+      window.dispatchEvent(new Event('storage'));
+    } catch (error) {
+      console.error('Ошибка при обновлении данных пользователя:', error);
+    }
   }
 
   const getStatusLabel = (status: string) => {
@@ -259,10 +314,24 @@ const ProfilePage = () => {
             >
               {user.first_name?.charAt(0)}{user.last_name?.charAt(0)}
             </UserAvatar>
-            <Box textAlign={isMobile ? 'center' : 'left'}>
-              <Typography variant="h4" component="h1" gutterBottom>
-                {user.first_name} {user.last_name}
-              </Typography>
+            <Box textAlign={isMobile ? 'center' : 'left'} flex={1}>
+              <Box display="flex" alignItems="center" justifyContent={isMobile ? 'center' : 'flex-start'} mb={1}>
+                <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 0, mr: 2 }}>
+                  {user.first_name} {user.last_name}
+                </Typography>
+                {!isEditMode && (
+                  <Button
+                    startIcon={<EditIcon />}
+                    onClick={handleEditProfile}
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    sx={{ ml: 'auto', display: { xs: 'none', sm: 'flex' } }}
+                  >
+                    Редактировать
+                  </Button>
+                )}
+              </Box>
               <Typography variant="body1" color="text.secondary">
                 {user.email}
               </Typography>
@@ -272,16 +341,37 @@ const ProfilePage = () => {
                 )}
                 На сайте с {formatDate(user.created_at)}
               </Typography>
+              {!isEditMode && isMobile && (
+                <Button
+                  startIcon={<EditIcon />}
+                  onClick={handleEditProfile}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  sx={{ mt: 2 }}
+                >
+                  Редактировать профиль
+                </Button>
+              )}
             </Box>
           </Box>
         </Container>
       </PageHeader>
 
       <Container>
+        {isEditMode && user && (
+          <ProfileEditForm 
+            user={user}
+            onSuccess={handleUpdateSuccess}
+            onCancel={handleCancelEdit}
+          />
+        )}
+
         <Grid container spacing={4}>
           <Grid item xs={12} md={12}>
             <StyledTabs value={tabValue} onChange={handleTabChange} aria-label="Разделы профиля">
               <StyledTab label="Мои отзывы" />
+              <StyledTab label="Настройки" />
             </StyledTabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -434,6 +524,25 @@ const ProfilePage = () => {
                       Поделитесь своим опытом работы, чтобы помочь другим соискателям
                     </Typography>
                   </Box>
+                )}
+              </ProfileSection>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={1}>
+              <ProfileSection>
+                <SectionTitle>
+                  Настройки профиля
+                </SectionTitle>
+                
+                {!isEditMode && (
+                  <Button
+                    startIcon={<EditIcon />}
+                    onClick={handleEditProfile}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Редактировать профиль
+                  </Button>
                 )}
               </ProfileSection>
             </TabPanel>

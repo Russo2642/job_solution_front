@@ -55,7 +55,7 @@ import {
   Stack,
   Alert
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAdmin } from '../entities/admin/context/AdminContext';
 import { useAuth } from '../entities/auth/context/AuthContext';
@@ -64,6 +64,7 @@ import { CityApi, IndustryApi } from '../shared/api';
 import { City, Industry } from '../shared/types';
 import './AdminPage.css';
 import { httpClient } from '../shared/api/httpClient';
+import { IMaskInput } from 'react-imask';
 import {
   Visibility as VisibilityIcon
 } from '@mui/icons-material';
@@ -119,6 +120,30 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon, text, active, to, onCli
   );
 };
 
+interface CustomProps {
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+}
+
+const PhoneMaskAdapter = forwardRef<HTMLInputElement, CustomProps>(
+  function TextMaskCustom(props, ref) {
+    const { onChange, ...other } = props;
+    return (
+      <IMaskInput
+        {...other}
+        mask="+7 (000) 000 00 00"
+        definitions={{
+          '#': /[1-9]/,
+        }}
+        inputRef={ref}
+        onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
+        overwrite
+        placeholder="+7 (___) ___ __ __"
+      />
+    );
+  },
+);
+
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<AdminStatistics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -147,6 +172,8 @@ const Dashboard: React.FC = () => {
     { label: 'Компаний', value: stats?.companies_count, color: theme.palette.success.main },
     { label: 'Отзывов', value: stats?.reviews_count, color: theme.palette.info.main },
     { label: 'Ожидают модерации', value: stats?.pending_reviews, color: theme.palette.warning.main },
+    { label: 'Проверенные отзывы', value: stats?.approved_reviews, color: theme.palette.success.main },
+    { label: 'Отклоненные отзывы', value: stats?.rejected_reviews, color: theme.palette.error.main },
     { label: 'Городов', value: stats?.cities_count, color: theme.palette.error.main },
     { label: 'Отраслей', value: stats?.industries_count, color: theme.palette.secondary.main },
     { label: 'Типов бенефитов', value: stats?.benefit_types_count, color: '#6d4c41' },
@@ -206,6 +233,7 @@ const Users: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState('');
   const fetchingRef = React.useRef(false);
   const [processingAction, setProcessingAction] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -227,6 +255,15 @@ const Users: React.FC = () => {
 
     fetchUsers();
   }, [page, rowsPerPage]);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
@@ -257,6 +294,7 @@ const Users: React.FC = () => {
       setUsers(response.data.users);
       setTotal(response.data.pagination.total);
       handleCloseDeleteDialog();
+      setSuccessMessage('Пользователь успешно удален');
     } catch (error) {
       console.error('Ошибка при удалении пользователя:', error);
     } finally {
@@ -292,6 +330,7 @@ const Users: React.FC = () => {
       setUsers(response.data.users);
       setTotal(response.data.pagination.total);
       handleCloseRoleDialog();
+      setSuccessMessage(`Роль пользователя ${selectedUser.first_name} ${selectedUser.last_name} успешно изменена на "${selectedRole}"`);
     } catch (error) {
       console.error('Ошибка при изменении роли пользователя:', error);
     } finally {
@@ -315,6 +354,12 @@ const Users: React.FC = () => {
       <Typography variant="h4" mb={4} fontWeight={500}>
         Управление пользователями
       </Typography>
+
+      {successMessage && (
+        <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccessMessage(null)}>
+          {successMessage}
+        </Alert>
+      )}
 
       <Paper sx={{ width: '100%', overflow: 'hidden', borderRadius: 3 }}>
         <TableContainer sx={{ maxHeight: 600 }}>
@@ -366,7 +411,7 @@ const Users: React.FC = () => {
                       </Box>
                     </TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.phone}</TableCell>
+                    <TableCell>{user.phone || '—'}</TableCell>
                     <TableCell>
                       <Chip
                         label={user.role}
@@ -506,6 +551,7 @@ const Companies: React.FC = () => {
   const [industries, setIndustries] = useState<Industry[]>([]);
   const fetchingRef = React.useRef(false);
   const theme = useTheme();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<AdminCreateCompanyRequest>({
     name: '',
@@ -675,8 +721,10 @@ const Companies: React.FC = () => {
       
       if (currentCompany) {
         await AdminApi.updateCompany(currentCompany.id, formData);
+        setSuccessMessage('Компания успешно обновлена');
       } else {
         await AdminApi.createCompany(formData);
+        setSuccessMessage('Компания успешно создана');
       }
       
       const response = await AdminApi.getCompanies(page + 1, rowsPerPage);
@@ -760,6 +808,15 @@ const Companies: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
@@ -774,6 +831,12 @@ const Companies: React.FC = () => {
           Добавить компанию
         </Button>
       </Box>
+
+      {successMessage && (
+        <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccessMessage(null)}>
+          {successMessage}
+        </Alert>
+      )}
 
       <Paper sx={{ width: '100%', overflow: 'hidden', borderRadius: 3 }}>
         <TableContainer sx={{ maxHeight: 600 }}>
@@ -1028,6 +1091,7 @@ const Companies: React.FC = () => {
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
+                helperText="Например: 74951234567"
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -1114,6 +1178,7 @@ const Reviews: React.FC<ReviewsProps> = ({ updatePendingReviewsCount }) => {
   const [reviewStatus, setReviewStatus] = useState('pending');
   const theme = useTheme();
   const fetchingRef = React.useRef(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -1188,8 +1253,10 @@ const Reviews: React.FC<ReviewsProps> = ({ updatePendingReviewsCount }) => {
     try {
       if (moderationAction === 'approve') {
         await AdminApi.approveReview(selectedReview.review.id, moderationData);
+        setSuccessMessage('Отзыв успешно одобрен');
       } else {
         await AdminApi.rejectReview(selectedReview.review.id, moderationData);
+        setSuccessMessage('Отзыв успешно отклонен');
       }
 
       let response;
@@ -1233,11 +1300,27 @@ const Reviews: React.FC<ReviewsProps> = ({ updatePendingReviewsCount }) => {
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
 
+  // Скрываем сообщение об успехе через 3 секунды
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
   return (
     <Box>
       <Typography variant="h4" mb={4} fontWeight={500}>
         Управление отзывами
       </Typography>
+
+      {successMessage && (
+        <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccessMessage(null)}>
+          {successMessage}
+        </Alert>
+      )}
 
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <FormControl sx={{ minWidth: 200 }}>
@@ -1444,16 +1527,24 @@ const Reviews: React.FC<ReviewsProps> = ({ updatePendingReviewsCount }) => {
                 Оценки по категориям:
               </Typography>
               <Grid container spacing={2} sx={{ mb: 2 }}>
-                {selectedReview.category_ratings.map((category) => (
-                  <Grid item xs={12} sm={6} md={4} key={category.category_id}>
-                    <Typography variant="body2">
-                      {category.category}: <Rating value={category.rating} readOnly precision={0.5} size="small" />
+                {selectedReview.category_ratings && selectedReview.category_ratings.length > 0 ? (
+                  selectedReview.category_ratings.map((category) => (
+                    <Grid item xs={12} sm={6} md={4} key={category.category_id}>
+                      <Typography variant="body2">
+                        {category.category}: <Rating value={category.rating} readOnly precision={0.5} size="small" />
+                      </Typography>
+                    </Grid>
+                  ))
+                ) : (
+                  <Grid item xs={12}>
+                    <Typography variant="body2" color="text.secondary">
+                      Нет оценок по категориям
                     </Typography>
                   </Grid>
-                ))}
+                )}
               </Grid>
 
-              {selectedReview.benefits.length > 0 && (
+              {selectedReview.benefits && selectedReview.benefits.length > 0 && (
                 <>
                   <Typography variant="subtitle2" gutterBottom>
                     Бенефиты:
@@ -1582,8 +1673,9 @@ const Suggestions: React.FC = () => {
     try {
       setLoading(true);
       const response = await httpClient.get<SuggestionsApiResponse>('/suggestions');
-      if (response.success && response.data && response.data.suggestions) {
-        setSuggestions(response.data.suggestions);
+      if (response.success && response.data) {
+        setSuggestions(response.data.suggestions || []);
+        setError('');
       } else {
         setError('Ошибка при загрузке предложений');
         setSuggestions([]);

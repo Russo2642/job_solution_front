@@ -103,23 +103,28 @@ export const CompanyReviewCard: React.FC<ReviewCardProps> = ({
   return (
     <div className={styles.reviewCard}>
       <div className={styles.reviewHeader}>
-        <div className={styles.reviewHeaderLeft}>
-          <h3 className={styles.position}>{position}</h3>
-          <div className={styles.tags}>
-            <span className={styles.tag}>{isFormerEmployee ? 'Бывший сотрудник' : 'Текущий сотрудник'}</span>
-            <span className={styles.tag}>{employment}</span>
-            <span className={styles.tag}>{workExperience}</span>
-            <span className={styles.tag}>{location}</span>
+        <div className={styles.topRow}>
+          <div className={styles.positionWrapper}>
+            <h3 className={styles.position}>{position}</h3>
+          </div>
+          <div className={styles.dateContainer}>
+            <span className={styles.date}>{date}</span>
           </div>
         </div>
-        <div className={styles.reviewHeaderRight}>
-          <span className={styles.date}>{date}</span>
+        
+        <div className={styles.infoRow}>
+          <div className={styles.ratingContainer}>
+            <div className={styles.ratingValue}>{rating.toFixed(1)}</div>
+            <div className={styles.stars}>{renderStars(rating)}</div>
+          </div>
         </div>
-      </div>
 
-      <div className={styles.ratingContainer}>
-        <div className={styles.ratingValue}>{rating.toFixed(1)}</div>
-        <div className={styles.stars}>{renderStars(rating)}</div>
+        <div className={styles.tags}>
+          <span className={styles.tag}>{isFormerEmployee ? 'Бывший сотрудник' : 'Текущий сотрудник'}</span>
+          <span className={styles.tag}>{employment}</span>
+          <span className={styles.tag}>{workExperience}</span>
+          <span className={styles.tag}>{location}</span>
+        </div>
       </div>
 
       <div className={styles.reviewContent}>
@@ -163,7 +168,7 @@ export const CompanyReviewCard: React.FC<ReviewCardProps> = ({
           disabled={isLoading}
         >
           <span className={styles.thumbIcon}>👍</span>
-          Полезный отзыв: {likesCount}
+          <span className={styles.usefulText}>Полезный отзыв:</span> <span className={styles.usefulCount}>{likesCount}</span>
         </button>
       </div>
 

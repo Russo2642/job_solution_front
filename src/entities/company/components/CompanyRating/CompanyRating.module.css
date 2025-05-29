@@ -120,4 +120,56 @@
   text-align: center;
   padding: 20px;
   font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .ratingContainer {
+    flex-direction: column;
+    padding: 16px;
+    gap: 24px;
+  }
+
+  .overallRatingContainer {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .overallRating {
+    font-size: 36px;
+    min-width: 60px;
+    margin-right: 12px;
+  }
+
+  .ratingDescription {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .reviewsCount {
+    font-size: 13px;
+    margin-top: 6px;
+    white-space: nowrap;
+  }
+
+  .recommendationContainer {
+    max-width: 100%;
+    margin-top: 24px;
+  }
+
+  .categoryColumn {
+    border-top: 1px solid #eee;
+    padding-top: 24px;
+  }
+
+  .categoryRow {
+    margin-bottom: 12px;
+  }
+
+  .starRating {
+    font-size: 14px;
+  }
+
+  .categoryName {
+    font-size: 14px;
+  }
 } 

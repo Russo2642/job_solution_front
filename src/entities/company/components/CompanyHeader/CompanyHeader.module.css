@@ -89,6 +89,9 @@
 .reviewsCount {
   font-size: 14px;
   color: #777;
+  display: inline-block;
+  margin-left: 4px;
+  white-space: nowrap;
 }
 
 .industries {
@@ -134,20 +137,26 @@
 }
 
 .reviewButton {
-  padding: 10px 20px;
+  padding: 12px 24px;
   background-color: #2ecc71;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   margin-bottom: 12px;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .reviewButton:hover {
   background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .socialLinks {
@@ -175,4 +184,70 @@
 .twitterIcon, .linkedinIcon, .facebookIcon {
   font-size: 16px;
   font-weight: 600;
+}
+
+.reviewButtonIcon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .headerContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .logoContainer {
+    margin-right: 0;
+    margin-bottom: 16px;
+    width: 80px;
+    height: 80px;
+  }
+
+  .infoContainer {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .ratingRow {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .reviewsCount {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .industries {
+    margin-top: 12px;
+  }
+
+  .actionsContainer {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .reviewButton {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .socialLinks {
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .socialLink {
+    width: 36px;
+    height: 36px;
+  }
+
+  .twitterIcon, .linkedinIcon, .facebookIcon {
+    font-size: 18px;
+  }
 } 

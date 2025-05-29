@@ -8,28 +8,58 @@
 
 .reviewHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
   margin-bottom: 16px;
 }
 
-.reviewHeaderLeft {
+.topRow {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.positionWrapper {
+  flex: 1;
+  padding-right: 16px;
 }
 
 .position {
   font-size: 18px;
   font-weight: 600;
-  margin: 0 0 8px 0;
+  margin: 0;
   color: #333;
+}
+
+.dateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  min-width: 85px;
+}
+
+.date {
+  color: #666;
+  font-size: 14px;
+  white-space: nowrap;
+  background-color: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 5px;
+  margin-bottom: 12px;
 }
 
 .tag {
@@ -41,15 +71,10 @@
   white-space: nowrap;
 }
 
-.date {
-  color: #999;
-  font-size: 14px;
-}
-
 .ratingContainer {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .ratingValue {
@@ -154,13 +179,13 @@
   display: flex;
   align-items: center;
   background: none;
-  border: none;
+  border: 1px solid #eee;
   color: #333;
   font-size: 14px;
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .usefulButton:hover {
@@ -174,6 +199,14 @@
 
 .thumbIcon {
   margin-right: 6px;
+}
+
+.usefulText {
+  margin-right: 4px;
+}
+
+.usefulCount {
+  font-weight: 600;
 }
 
 .authAlert {
@@ -191,4 +224,64 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .reviewCard {
+    padding: 16px;
+  }
+
+  .topRow {
+    margin-bottom: 8px;
+  }
+
+  .position {
+    font-size: 16px;
+  }
+
+  .dateContainer {
+    min-width: auto;
+  }
+
+  .date {
+    font-size: 13px;
+  }
+
+  .tags {
+    margin-bottom: 8px;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .ratingContainer {
+    margin-bottom: 4px;
+  }
+
+  .ratingValue {
+    font-size: 16px;
+  }
+
+  .star {
+    font-size: 16px;
+  }
+
+  .benefitsTags {
+    gap: 6px;
+  }
+
+  .benefitTag {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .usefulButton {
+    padding: 8px 12px;
+  }
+  
+  .usefulText, .usefulCount {
+    font-size: 13px;
+  }
 } 

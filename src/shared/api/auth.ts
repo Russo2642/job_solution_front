@@ -6,7 +6,9 @@ import {
     LogoutResponse, 
     RefreshResponse, 
     RefreshTokenRequest, 
-    RegisterRequest 
+    RegisterRequest,
+    ForgotPasswordRequest,
+    ForgotPasswordResponse
 } from './types';
 
 export class AuthApi {
@@ -24,5 +26,9 @@ export class AuthApi {
 
     static async refresh(data: RefreshTokenRequest): Promise<RefreshResponse> {
         return httpClient.post<RefreshResponse>('/auth/refresh', data);
+    }
+    
+    static async forgotPassword(data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
+        return httpClient.post<ForgotPasswordResponse>('/auth/forgot-password', data);
     }
 } 

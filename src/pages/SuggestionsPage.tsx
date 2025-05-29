@@ -91,6 +91,11 @@ const SuggestionsPage: React.FC = () => {
       return;
     }
     
+    if (text.trim().length < 5) {
+      setError('Текст должен содержать минимум 5 символов');
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     
@@ -189,6 +194,8 @@ const SuggestionsPage: React.FC = () => {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 variant="outlined"
+                error={text.trim().length > 0 && text.trim().length < 5}
+                helperText={text.trim().length > 0 && text.trim().length < 5 ? 'Минимум 5 символов' : ''}
                 sx={{ 
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
@@ -215,7 +222,7 @@ const SuggestionsPage: React.FC = () => {
                 variant="contained"
                 color="primary"
                 size="large"
-                disabled={loading}
+                disabled={loading || text.trim().length < 5}
                 sx={{
                   py: 1.5,
                   px: 5,

@@ -109,6 +109,32 @@ export interface CompanyReviewsResponse {
     success: boolean;
 }
 
+export interface UpdateUserRequest {
+    first_name?: string;
+    last_name?: string;
+    password?: string;
+    password_confirm?: string;
+    phone?: string;
+}
+
+export interface UpdateUserResponse {
+    data: User;
+    success: boolean;
+}
+
+export interface ForgotPasswordRequest {
+    email: string;
+    password: string;
+    password_confirm: string;
+}
+
+export interface ForgotPasswordResponse {
+    data: {
+        message: string;
+    };
+    success: boolean;
+}
+
 export const getErrorMessage = (status: number, message?: string): string => {
     switch (status) {
         case 400:
@@ -293,7 +319,8 @@ export class ApiClient {
 
 export class AuthApi {
     static async register(data: RegisterRequest): Promise<AuthResponse> {
-        return ApiClient.request<AuthResponse>(`${API_BASE_URL}/auth/register`, {
+        const url = `${API_BASE_URL}/auth/register`;
+        return ApiClient.request<AuthResponse>(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -303,7 +330,8 @@ export class AuthApi {
     }
 
     static async login(data: LoginRequest): Promise<AuthResponse> {
-        return ApiClient.request<AuthResponse>(`${API_BASE_URL}/auth/login`, {
+        const url = `${API_BASE_URL}/auth/login`;
+        return ApiClient.request<AuthResponse>(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -313,7 +341,8 @@ export class AuthApi {
     }
 
     static async logout(data: LogoutRequest): Promise<LogoutResponse> {
-        return ApiClient.request<LogoutResponse>(`${API_BASE_URL}/auth/logout`, {
+        const url = `${API_BASE_URL}/auth/logout`;
+        return ApiClient.request<LogoutResponse>(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -323,7 +352,19 @@ export class AuthApi {
     }
 
     static async refresh(data: RefreshTokenRequest): Promise<RefreshResponse> {
-        return ApiClient.request<RefreshResponse>(`${API_BASE_URL}/auth/refresh`, {
+        const url = `${API_BASE_URL}/auth/refresh`;
+        return ApiClient.request<RefreshResponse>(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+    }
+    
+    static async forgotPassword(data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
+        const url = `${API_BASE_URL}/auth/forgot-password`;
+        return ApiClient.request<ForgotPasswordResponse>(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -359,15 +400,40 @@ export class UserService {
     }
 
     static getUser(): User | null {
-        const userJson = localStorage.getItem('user');
-        if (userJson) {
+        try {
+            const userJson = localStorage.getItem('user');
+            if (!userJson || userJson === 'undefined' || userJson === 'null') {
+                return null;
+            }
             return JSON.parse(userJson);
+        } catch (error) {
+            console.error('Ошибка при получении данных пользователя:', error);
+            localStorage.removeItem('user');
+            return null;
         }
-        return null;
     }
 
     static clearUser(): void {
         localStorage.removeItem('user');
+    }
+    
+    static async updateProfile(data: UpdateUserRequest): Promise<UpdateUserResponse> {
+        const url = `${API_BASE_URL}/users/me`;
+        const response = await ApiClient.request<UpdateUserResponse>(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        
+        if (response.success && response.data) {
+            this.setUser(response.data);
+            
+            window.dispatchEvent(new Event('storage'));
+        }
+        
+        return response;
     }
 }
 
