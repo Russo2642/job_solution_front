@@ -256,7 +256,7 @@ const CompanyFilters: React.FC<CompanyFiltersProps> = ({
             <MenuItem value="">Все города</MenuItem>
             {cities.map((city) => (
               <MenuItem key={city.id} value={city.id}>
-                {city.name}, {city.region}
+                {city.name}
               </MenuItem>
             ))}
           </StyledSelect>
